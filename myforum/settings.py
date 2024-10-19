@@ -48,7 +48,7 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -60,6 +60,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'forum',
+    'papers',
 )
 
 MIDDLEWARE = (
@@ -137,10 +138,10 @@ CACHES = {
 
 # email配置#########################################
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.126.com'  # SMTP地址 例如: smtp.163.com
+EMAIL_HOST = 'smtp.163.com'  # SMTP地址 例如: smtp.163.com
 EMAIL_PORT = 25  # SMTP端口 例如: 25
-EMAIL_HOST_USER = 'Psq147258@126.com'  # 我自己的邮箱 例如: xxxxxx@126.com
-EMAIL_HOST_PASSWORD = ''  # SMTP密码 例如  xxxxxxxxx
+EMAIL_HOST_USER = 'no_entity@163.com'  # 我自己的邮箱 例如: xxxxxx@126.com
+EMAIL_HOST_PASSWORD = 'JWRGKLg6DTBcnEFc'  # SMTP密码 例如  xxxxxxxxx
 # EMAIL_SUBJECT_PREFIX = u'v'       #为邮件Subject-line前缀,默认是'[django]'
 EMAIL_USE_TLS = True  # 与SMTP服务器通信时，是否启动TLS链接(安全链接)。默认是false
 
@@ -160,3 +161,6 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
+
+CELERY_BROKER_URL = 'redis://122.9.10.119:6379/0'
+CELERY_RESULT_BACKEND = 'redis://122.9.10.119:6379/0'
