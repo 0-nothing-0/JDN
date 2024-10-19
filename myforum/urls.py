@@ -5,4 +5,5 @@ admin.autodiscover()
 urlpatterns = [
     path(r'admin/', admin.site.urls),
     path(r'', include('forum.urls')),
+    path('papers/', include('papers.urls')),
 ]
