@@ -17,6 +17,7 @@ urlpatterns = [
     re_path(r'^accounts/register/$',
             views.userregister,
             name='user_register'),
+    re_path(r'^accounts/login/forgotpassword/$', views.forgotpassword, name='forgot_password'),        
     re_path(r'^$', IndexView.as_view(), name='index'),
     re_path(r'^columns/$', views.columnall, name='column_all'),
     re_path(r'^column/(?P<column_pk>\d+)/$',

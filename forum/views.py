@@ -2,11 +2,12 @@
 import os
 import time
 import logging
+import random #changed
 
 from io import BytesIO
 
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse #changed
 from django.http.response import Http404
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
@@ -142,6 +143,67 @@ def userregister(request):
         # if next is None:
         # next = reverse_lazy('index')
         return render(request, 'register.html')
+    
+
+def forgotpassword(request):
+    if request.method == 'POST':
+        email = request.POST.get("email", "")
+        new_password = request.POST.get("new_password", "")
+        confirm_password = request.POST.get("confirm_password", "")
+        verification_code = request.POST.get("verification_code", "")
+        
+        user = LoginUser.objects.filter(email=email).first()
+        errors = []
+
+        if user:
+            if request.POST.get('resend_code'):
+                # 检查上次发送验证码的时间
+                last_sent_time = cache.get(f"{email}_last_sent_time")
+                current_time = time.time()
+                if last_sent_time and current_time - last_sent_time < 60:
+                    return JsonResponse({'status': 'error', 'message': '请稍后再试！每分钟只能发送一次验证码。'})
+                
+                # 生成6位数验证码
+                verification_code = ''.join(random.choices('0123456789', k=6))
+                
+                # 将验证码存储在缓存中，有效期为10分钟
+                cache.set(email, verification_code, 600)
+                cache.set(f"{email}_last_sent_time", current_time, 600)
+                
+                current_site = get_current_site(request)
+                domain = current_site.domain
+                title = u"密码找回"
+                message = u"您的验证码是：%s" % verification_code
+                from_email = None
+                try:
+                    send_mail(title, message, from_email, [email])
+                except Exception as e:
+                    logger.error(
+                        u'用户找回密码邮件发送失败:email: %s' % email, exc_info=True)
+                    return JsonResponse({'status': 'error', 'message': '发送邮件错误！'})
+                return JsonResponse({'status': 'success', 'message': '验证码已发送，请查收！'})
+            else:
+                # 验证验证码
+                cached_code = cache.get(email)
+                if cached_code != verification_code:
+                    errors.append(u"验证码错误！")
+                
+                # 验证新密码和确认密码是否一致
+                if new_password != confirm_password:
+                    errors.append(u"新密码和确认密码不一致！")
+                
+                if not errors:
+                    # 更新用户密码
+                    user.set_password(new_password)
+                    user.save()
+                    return HttpResponse(u"密码已成功重置！")
+        else:
+            errors.append(u"用户不存在！")
+
+        return render(request, 'forgot_password.html', {"errors": errors})
+
+    else:
+        return render(request, 'forgot_password.html')
 
 
 class BaseMixin(object):
