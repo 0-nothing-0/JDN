@@ -2,6 +2,8 @@
 板块:{{ column_obj.name}}; 管理员:{{ column_obj.manager }}; 帖子:{{column_obj.post_number}}<br>
 
 
+
+{% block content %}
 <!-- {% for post in column_posts %}
 <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
 
@@ -11,8 +13,6 @@
 回复点击数:{{ post.responce_times }}/{{ post.view_times }}
 <br>
 {% endfor %} -->
-
-{% block content %}
 <div class="wrap">
 
       <!-- Diy area start -->
@@ -58,30 +58,40 @@
                                                       <div class="cate"><a href="{{ post.column.get_absolute_url }}"
                                                                   target="_blank">{{ post.column }}</a></div>
                                                       <span>•</span>
-
-                                                      <div class="date"><span title="">发表于{{ post.created_at|date:"Y-m-d
-                                                                  H:i:s" }}</span></div>
+                                                      <div class="date"><span title="">发表于:{{ post.created_at|date:"Y-m-d H:i:s" }};</span></div>
                                                       <span>•</span>
                                                       <div class="author">{{ post.author }}</div>
                                                       <span>•</span>
 
                                                       <div class="lastreply">
-                                                            <a href="" target="_blank" title="1 分钟前">{{
-                                                                  post.last_response }}最后回复</a>
+                                                            <a href="" target="_blank" title="1 分钟前"> {{post.last_response }} 最后回复</a>
                                                       </div>
 
                                                 </div>
                                           </td>
 
                                           <td width="11%" align="right" valign="middle" class="reply">
-                                                <a href="" target="_blank">{{ post.responce_times }}/{{ post.view_times
-                                                      }}</a>
+                                                <a href="" target="_blank"> {{ post.responce_times }}/{{ post.view_times}} </a>
                                           </td>
                                     </tr>
                               </tbody>
                         </table>
                         {% endfor %}
-                        {% endif %}
+                        <!-- {% endif %} -->
+                  </div>
+                  <!-- End -->
+                  
+                  <!-- Page start -->
+                      <div class="pages clearfix">
+                  <div class="backhome" id="visitedforumstmp" onMouseOver="$(&#39;visitedforums&#39;).id = &#39;visitedforumstmp&#39;;this.id = &#39;visitedforums&#39;;showMenu({&#39;ctrlid&#39;:this.id,&#39;pos&#39;:&#39;21&#39;})"><a href="/">返&nbsp;回</a></div>
+                  
+                  <ul class="num">
+                    <?php pagenavi(); ?>
+                  
+                    </ul>    </div>
+                  <!-- End -->
+                  </div>
                   </form>
-            </div>
-            {% endblock %}
+            </div>      
+      </div>
+{% endblock %}
