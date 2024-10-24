@@ -12,3 +12,4 @@ log/
 *.swp
 */migrations/
 .DS_Store
+.sqlite3
