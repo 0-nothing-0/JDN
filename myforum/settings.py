@@ -63,6 +63,7 @@ INSTALLED_APPS = (
     'papers',
     'eccv',
     'iclr',
+    'sp',
 )
 
 MIDDLEWARE = (

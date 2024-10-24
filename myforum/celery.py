@@ -26,5 +26,9 @@ app.conf.beat_schedule = {
         'task': 'iclr.tasks.fetch_papers',
         'schedule': crontab(minute='*'),
     },
+    'fetch-sp-papers-every-day': {
+        'task': 'sp.tasks.fetch_papers',
+        'schedule': crontab(minute='*'),
+    },
 }
 

@@ -8,4 +8,5 @@ urlpatterns = [
     path('papers/', include('papers.urls')),
     path('eccv/', include('eccv.urls')),
     path('iclr/', include('iclr.urls')),
+    path('sp/', include('sp.urls')),
 ]
