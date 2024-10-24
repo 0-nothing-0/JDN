@@ -60,7 +60,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'forum',
-    'papers',
+    'paper',
     'eccv',
     'iclr',
     'sp',

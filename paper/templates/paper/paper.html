@@ -16,13 +16,13 @@
         h1 {
             color: #0056b3;
             display: flex;
-            align-items: center; /* Vertical align title and icon */
+            align-items: center;
             margin-left: 1rem;
         }
         h1 img {
-            margin-right: 10px; /* Space between icon and title */
-            width: 34px; /* Icon width */
-            height: 34px; /* Icon height */
+            margin-right: 10px;
+            width: 34px;
+            height: 34px;
         }
         ul {
             list-style: none;
@@ -68,14 +68,14 @@
         {% for paper, emoji in papers_with_emojis %}
         <li class="card">
             <strong>{{ paper.title }}</strong> by {{ paper.authors }}
-            <a href="{{ paper.link }}">Link</a> {{ emoji }}
+            - Published: {{ paper.date_published }} {{ emoji }}{% if paper.link %} - <a href="{{ paper.link }}">Link</a>{% endif %}
         </li>
         {% empty %}
         <li class="card">No papers found.</li>
         {% endfor %}
     </ul>
     <div class="footer">
-        <a href="https://eprint.iacr.org/">Visit ePrint IACR</a>
+        <a href="https://eprint.iacr.org/">Visit eprint</a>
     </div>
     <script type="text/javascript" src="http://xujiangtao.icu:81/xjtfile/lizi.js"></script>
 </body>

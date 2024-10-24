@@ -7,4 +7,4 @@ def papers_list(request):
     emojis = ['😀', '😂', '🤔', '😍', '👍', '💥', '📘', '🔬']
     # Add random emoji to each paper
     papers_with_emojis = [(paper, random.choice(emojis)) for paper in papers]
-    return render(request, 'papers/papers.html', {'papers_with_emojis': papers_with_emojis})
+    return render(request, 'paper/paper.html', {'papers_with_emojis': papers_with_emojis})
