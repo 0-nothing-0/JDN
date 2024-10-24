@@ -24,7 +24,8 @@
 	float:left;
 	width:75%;
 	
-	border:1px solid #F00
+	border:1px solid ;
+	border-color: grey;
 }
 
 .comment
@@ -45,7 +46,7 @@
 	float:left;
 	width:75%;
 	height:200px; 
-	border:1px solid #F00
+	border:1px solid gray
 }
 
 .floor
