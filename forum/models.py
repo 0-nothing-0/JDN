@@ -12,7 +12,21 @@ from django.urls import reverse_lazy
 
 # Create your models here.
 
+#每个模型被表示为 django.db.models.Model 类的子类。
+#每个模型有许多类变量，它们都表示模型里的一个数据库字段。
+#每个字段都是 Field 类的实例 - 比如，字符字段被表示为 CharField ，日期时间字段被表示为 DateTimeField 。这将告诉 Django 每个字段要处理的数据类型。
+#每个 Field 类实例变量的名字（例如 levels 或 avatar）也是字段名，所以最好使用对机器友好的格式。你将会在 Python 代码里使用它们，而数据库会将它们作为列名。
 
+class Paper(models.Model):
+    paper_id = models.CharField(max_length=100, unique=True)
+    title = models.CharField(max_length=500)
+    authors = models.TextField()
+    link = models.URLField()
+
+    def __str__(self):
+        return self.title
+
+        
 class LoginUser(AbstractUser):
     levels = models.PositiveIntegerField(default=0, verbose_name=u'积分')
     avatar = models.CharField(
@@ -34,6 +48,8 @@ class LoginUser(AbstractUser):
             return True
         else:
             return False
+    def get_like_url(self):
+        return reverse_lazy('user_like')
 
 
 class Nav(models.Model):
@@ -54,6 +70,8 @@ class Nav(models.Model):
 
 class Column(models.Model):  # 板块
     name = models.CharField(max_length=30)
+    #我们使用 ForeignKey 定义了一个关系。这将告诉 Django，每个 Choice 对象都关联到一个 Question 对象。
+    #Django 支持所有常用的数据库关系：多对一、多对多和一对一。
     manager = models.ForeignKey(
         settings.AUTH_USER_MODEL, related_name='column_manager', on_delete=models.PROTECT)  # 版主
     parent = models.ForeignKey(
@@ -88,13 +106,14 @@ class PostType(models.Model):  # 文章类型
 
     def __str__(self):
         return self.type_name
-
+    #给模型增加 __str__() 方法是很重要的，这不仅仅能给你在命令行里使用带来方便，Django 自动生成的 admin 里也使用这个方法来表示对象。
 
 class Post(models.Model):  # 文章
     title = models.CharField(max_length=30)
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL, related_name='post_author', on_delete=models.PROTECT)  # 作者
-    column = models.ForeignKey(Column, on_delete=models.PROTECT)  # 所属板块
+    column = models.ForeignKey(Column, on_delete=models.PROTECT)  # 所属板块    settings.AUTH_USER_MODEL, related_name='post_author', on_delete=models.PROTECT)  # 作者
+    
     type_name = models.ForeignKey(PostType, on_delete=models.PROTECT)  # 文章类型
     content = models.TextField()
 
@@ -119,6 +138,13 @@ class Post(models.Model):  # 文章
     def get_absolute_url(self):
         return reverse_lazy('post_detail', kwargs={"post_pk": self.pk})
 
+class Lrelation(models.Model):
+    user = models.ForeignKey(LoginUser, on_delete=models.PROTECT,related_name='user_relations')  # 所属板块
+    post = models.ForeignKey(Post, on_delete=models.PROTECT)  # 所属板块
+    
+    class Meta:
+        db_table = 'Lrelation'
+        verbose_name_plural = u'收藏'
 
 class Comment(models.Model):  # 评论
     post = models.ForeignKey(Post, on_delete=models.PROTECT)
@@ -269,10 +295,10 @@ def message_save(sender, instance, signal, *args, **kwargs):
             type=2)
         event.save()
 
-
 # 消息响应函数注册
 signals.post_save.connect(comment_save, sender=Comment)
 signals.post_save.connect(application_save, sender=Message)
 signals.post_save.connect(message_save, sender=Application)
 signals.post_save.connect(post_save, sender=Post)
 signals.post_delete.connect(post_delete, sender=Post)
+
