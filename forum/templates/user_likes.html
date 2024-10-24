@@ -1,0 +1,15 @@
+
+{%if like_posts %}
+{% for post in like_posts %}
+
+<a href="{{ post.get_absolute_url }}" >{{ post.title }}</a>
+      
+      发表于:{{ post.created_at|date:"Y-m-d H:i:s" }};
+      作者:{{ post.author }}；
+      最后回复:{{ post.last_response }}
+      回复点击数:{{ post.responce_times }}/{{ post.view_times }}
+      <br>
+{% endfor %}
+{%else%}
+<h3>暂无收藏帖子</h3>
+{%endif%}
