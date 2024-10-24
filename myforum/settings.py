@@ -61,6 +61,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'forum',
     'papers',
+    'eccv',
+    'iclr',
 )
 
 MIDDLEWARE = (

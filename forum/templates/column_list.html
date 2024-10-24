@@ -1,87 +1,102 @@
-{% for column in column_list %}
+{% extends "./base.html" %}
+
+{% block content %}
+<!-- {% for column in column_list %}
 	板块：<a href="{{ column.get_absolute_url }}">{{ column.name }}</a> ; 管理员:{{ column.manager }}; 帖子:{{column.post_number}}<br>
 	帖子列表：
 	{% for post in column.post_set.all %}
 		<a href="{{ post.get_absolute_url }}">{{ post.title }}</a>|<a href="{% url 'post_delete' post.pk %}">删除</a>
 	{% endfor %}
 	<br>
-{% endfor %}
-
-{% extends "./base.html" %}
-{% block content %}
+{% endfor %} -->
 <div class="wrap">
 
-      <!-- Diy area start -->
+	<!-- Diy area start -->
 
 
-      <!-- End -->
+	<!-- End -->
 
-      <!-- Banner start -->
-      <!-- end -->
+	<!-- Banner start -->
+	<!-- end -->
 
-      <!-- text start -->
-      <div class="con box">
+	<!-- text start -->
+	<div class="box" float = "left" width="1000px">
 
 
-            <!-- End -->
+		  <!-- End -->
 
-            <!-- text theme list start -->
-            <div class="list" id="threadlist" style="position: relative;">
-                  <script src="/static/js/forum_moderate.js" type="text/javascript"></script>
-                  <form method="post" autocomplete="off" name="moderate" id="moderate" action="">
-                        <input type="hidden" name="formhash" value="31213a3e">
-                        <input type="hidden" name="listextra" value="">
-                        <!-- {% if column_posts %} -->
-						{% for column in column_list %}
-                        {% for post in column.post_set.all %}
-                        <table width="100%">
-                              <tbody>
-                                    <tr id="post">
-                                          <td width="10%" class="avatar" valign="middle">
-                                                <a href="{{ post.get_absolute_url }}" title="">
-                                                      <img src="{{ post.author.avatar }}">
-                                                </a>
-                                          </td>
-                                          <td width="auto" valign="middle" class="mainbox">
-                                                <div class="title">
-                                                      <a class="title" href="{{ post.get_absolute_url }}" rel="bookmark"
-                                                            title="">{{ post.title }}</a>
-                                                </div>
-                                                <div class="status">
-                                                      <div class="cate"><a href="{{ post.column.get_absolute_url }}"
-                                                                  target="_blank">{{ post.column }}</a></div>
-                                                      <span>•</span>
-                                                      <div class="date"><span title="">发表于:{{ post.created_at|date:"Y-m-d H:i:s" }};</span></div>
-                                                      <span>•</span>
-                                                      <div class="author">{{ post.author }}</div>
-                                                      <span>•</span>
+		  <!-- text theme list start -->
+		  <div class="list" id="threadlist" style="position: relative;">
+				<script src="/static/js/forum_moderate.js" type="text/javascript"></script>
+				<form method="post" autocomplete="off" name="moderate" id="moderate" action="">
+					  <input type="hidden" name="formhash" value="31213a3e">
+					  <input type="hidden" name="listextra" value="">
+					  {% for column in column_list %}
+					  <table width="100%">
+						<tbody>
+							<tr id="column">
+								<td width="auto" valign="middle" class="mainbox">
+									<div class="title">
+										<a class="title" href="{{ column.get_absolute_url }}" rel="bookmark" title="">{{ column.name }}</a>
+									</div>
+									<div class="status">
+										<div class="manager">管理员: {{ column.manager }}</div>
+										<span>•</span>
+										<div class="post-number">帖子: {{ column.post_number }}</div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					  {% for post in column.post_set.all %}
+					  <table width="100%">
+							<tbody>
+								  <tr id="post">
+										<td width="10%" class="avatar" valign="middle">
+											  <a href="{{ post.get_absolute_url }}" title="">
+													<img src="{{ post.author.avatar }}">
+											  </a>
+										</td>
+										<td width="auto" valign="middle" class="mainbox">
+											  <div class="title">
+													<a class="title" href="{{ post.get_absolute_url }}" rel="bookmark"
+														  title="">{{ post.title }}</a>
+											  </div>
+											  <div class="status">
+													<div class="cate"><a href="{{ post.column.get_absolute_url }}"
+																target="_blank">{{ post.column }}</a></div>
+													<span>•</span>
+													<div class="date"><span title="">发表于:{{ post.created_at|date:"Y-m-d H:i:s" }};</span></div>
+													<span>•</span>
+													<div class="author">{{ post.author }}</div>
+													<span>•</span>
 
-                                                      <div class="lastreply">
-                                                            <a href="" target="_blank" title="1 分钟前"> {{post.last_response }} 最后回复</a>
-                                                      </div>
+													<div class="lastreply">
+														  <a href="" target="_blank" title="1 分钟前"> {{post.last_response }} 最后回复</a>
+													</div>
 
-                                                </div>
-                                          </td>
-                                          <td width="11%" align="right" valign="middle" class="reply">
-                                                <a href="" target="_blank"> {{ post.responce_times }}/{{ post.view_times}} </a>
-                                          </td>
-                                    </tr>
-                              </tbody>
-                        </table>
-                        {% endfor %}
-                        <!-- {% endif %} -->
-                  </div>
-                  <!-- End -->
-                  
-                  <!-- Page start -->
-                  <div class="pages clearfix">
-                  <div class="backhome" id="visitedforumstmp" onMouseOver="$(&#39;visitedforums&#39;).id = &#39;visitedforumstmp&#39;;this.id = &#39;visitedforums&#39;;showMenu({&#39;ctrlid&#39;:this.id,&#39;pos&#39;:&#39;21&#39;})"><a href="/">返&nbsp;回</a></div>
-                  
-                  <ul class="num"> <?php pagenavi(); ?></ul>    
-                  </div>
-                  <!-- End -->
-                  </div>
-                  </form>
-            </div>      
-      </div>
+											  </div>
+										</td>
+										<td width="11%" align="right" valign="middle" class="reply">
+											  <a href="" target="_blank"> {{ post.responce_times }}/{{ post.view_times}} </a>
+										</td>
+								  </tr>
+							</tbody>
+					  </table>
+					  {% endfor %}
+					  {% endfor %}
+				</div>
+				<!-- End -->
+				
+				<!-- Page start -->
+				<div class="pages clearfix">
+				<div class="backhome" id="visitedforumstmp" onMouseOver="$(&#39;visitedforums&#39;).id = &#39;visitedforumstmp&#39;;this.id = &#39;visitedforums&#39;;showMenu({&#39;ctrlid&#39;:this.id,&#39;pos&#39;:&#39;21&#39;})"><a href="/">返&nbsp;回</a></div>
+				
+				<ul class="num"> <?php pagenavi(); ?></ul>    
+				</div>
+				<!-- End -->
+				</div>
+				</form>
+		  </div>      
+	</div>
 {% endblock %}

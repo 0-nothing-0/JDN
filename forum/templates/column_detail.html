@@ -1,18 +1,10 @@
 {% extends "./base.html" %}
-板块:{{ column_obj.name}}; 管理员:{{ column_obj.manager }}; 帖子:{{column_obj.post_number}}<br>
+板块:{{ column_obj.name}}; 管理员:{{ column_obj.manager }}; 帖子:{{column_obj.post_number}}
 
-
-
+{% block athor %} 
+板块:{{ column_obj.name}}; 管理员:{{ column_obj.manager }}; 帖子:{{column_obj.post_number}}
+{% endblock %}
 {% block content %}
-<!-- {% for post in column_posts %}
-<a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
-
-发表于:{{ post.created_at|date:"Y-m-d H:i:s" }};
-作者:{{ post.author }}；
-最后回复:{{ post.last_response }}
-回复点击数:{{ post.responce_times }}/{{ post.view_times }}
-<br>
-{% endfor %} -->
 <div class="wrap">
 
       <!-- Diy area start -->
@@ -24,7 +16,7 @@
       <!-- end -->
 
       <!-- text start -->
-      <div class="con box">
+      <div class="box" float = "left" width="1000px">
 
 
             <!-- End -->
@@ -35,9 +27,6 @@
                   <form method="post" autocomplete="off" name="moderate" id="moderate" action="">
                         <input type="hidden" name="formhash" value="31213a3e">
                         <input type="hidden" name="listextra" value="">
-
-
-
                         <!-- {% if column_posts %} -->
                         {% for post in column_posts %}
                         <table width="100%">
@@ -48,7 +37,6 @@
                                                       <img src="{{ post.author.avatar }}">
                                                 </a>
                                           </td>
-
                                           <td width="auto" valign="middle" class="mainbox">
                                                 <div class="title">
                                                       <a class="title" href="{{ post.get_absolute_url }}" rel="bookmark"
@@ -69,7 +57,6 @@
 
                                                 </div>
                                           </td>
-
                                           <td width="11%" align="right" valign="middle" class="reply">
                                                 <a href="" target="_blank"> {{ post.responce_times }}/{{ post.view_times}} </a>
                                           </td>
@@ -82,13 +69,11 @@
                   <!-- End -->
                   
                   <!-- Page start -->
-                      <div class="pages clearfix">
+                  <div class="pages clearfix">
                   <div class="backhome" id="visitedforumstmp" onMouseOver="$(&#39;visitedforums&#39;).id = &#39;visitedforumstmp&#39;;this.id = &#39;visitedforums&#39;;showMenu({&#39;ctrlid&#39;:this.id,&#39;pos&#39;:&#39;21&#39;})"><a href="/">返&nbsp;回</a></div>
                   
-                  <ul class="num">
-                    <?php pagenavi(); ?>
-                  
-                    </ul>    </div>
+                  <ul class="num"> <?php pagenavi(); ?></ul>    
+                  </div>
                   <!-- End -->
                   </div>
                   </form>

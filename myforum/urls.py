@@ -6,4 +6,6 @@ urlpatterns = [
     path(r'admin/', admin.site.urls),
     path(r'', include('forum.urls')),
     path('papers/', include('papers.urls')),
+    path('eccv/', include('eccv.urls')),
+    path('iclr/', include('iclr.urls')),
 ]

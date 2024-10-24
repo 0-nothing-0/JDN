@@ -1,15 +1,11 @@
 from django.db import models
 
 class Paper(models.Model):
-    paper_id = models.CharField(max_length=100, unique=True)
     title = models.CharField(max_length=500)
     authors = models.TextField()
-    link = models.URLField()
-
+    date_published = models.CharField(max_length=100)
+    pagination = models.CharField(max_length=100)
+    link = models.URLField(max_length=1000)
+    
     def __str__(self):
         return self.title
-
-
-
-
-
