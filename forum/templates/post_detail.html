@@ -50,23 +50,27 @@
 
 <!-- End -->
 
-<div id="all_post">
+<div id="all_post" >
 	<div class="post"> 
-		<div class="avatar">
-		<img src="{{ post.author.avatar}}"><br>
+		<div class="avatar" style="margin-bottom: 20%;">
+		<img src="{{ post.author.avatar}}" style="display: block; margin-left: auto;margin-right: auto;"><br>
                 <div style="font-size: 150%; color:black; text-align: center;">{{ post.author.username }}</div>
 		<div style="color:gray; text-align: center;">积分：{{ post.author.levels }}</div>
 		{% if user.username %}
           {% ifnotequal  post.author.username user.username %}
                       {%if not post.author|checkfriend:user %}
-				              <a href="{% url 'make_friend' user.username post.author.username %}">加好友</a>
+                            <div style="color:gray; text-align: center; font-style: italic">
+				              <a href="{% url 'make_friend' user.username post.author.username %}" >加好友</a>
+                            </div>
 		                  {% else %}
+                          <div style="color:gray; text-align: center; font-style: italic">
 				              <a href="{% url 'send_message' post.author.id %}">发消息</a>
+                            </div>
 		                  {% endif %}
 		      {% endifnotequal %}
 		{% endif %}
 		</div>
-		<div class="content">
+		<div class="content" style="margin-left: 2%; width: 80%; border: none;">
 			<span style="color: black; font-size: 2em;">{{ post.title }}</span>
 			<div style="color: black; font-size: 1.5em;">
                 {% autoescape off %}
@@ -88,12 +92,13 @@
         </div>
     -->
         <div class="vmaig-comment-edit clearfix">
-            <form id="vmaig-comment-form" method="post" role="form" style="border-radius: 5%;">
+            <form id="vmaig-comment-form" method="post" role="form">
                 {% csrf_token %}
-                <textarea id="comment2" name="comment" class="form-control" rows="4" style="width: 75%" placeholder="在这里留下你的评论吧！"></textarea><br/>
-                <button type="submit" class="btn btn-vmaig-comments pull-right" style="display: block;margin: auto; background-color: red;color: white; border: none;">提交</button>
+                <textarea id="comment2" name="comment" class="form-control" rows="4" style="width: 75%;border-radius: 1em;padding: 1%;margin-left: 2%" placeholder="在这里留下你的评论吧！"></textarea><br/>
+                <button type="submit" class="btn btn-vmaig-comments pull-right" style="display: block;margin: auto; background-color: white;color: black; border: 2xp;border-radius: 1em;">提&nbsp;交</button>
             </form>
         </div>
+
         <ul>
             {% for comment in comment_list%}
             <li>
@@ -109,9 +114,9 @@
 			{% if user.username %}
 			    {% ifnotequal  comment.author.username user.username %}
 		        	{%if not comment.author|checkfriend:user %}
-				        <a href="{% url 'make_friend' user.username comment.author.username %}">加好友</a>
+				        <a href="{% url 'make_friend' user.username comment.author.username %}" style="font-size: 75%; color:gray; font-style: italic;">加好友</a>
               {% else %}
-				        <a href="{% url 'send_message' comment.author.id %}">发消息</a>
+				        <a href="{% url 'send_message' comment.author.id %}" style="font-size: 75%; color:gray; font-style: italic;">发消息</a>
 		          {% endif %}
 			    {% endifnotequal %}
 			{% endif %}
@@ -126,7 +131,7 @@
              
             </div>
 	    <div class="floor">
-		<a href="javascript:showDivFun({{comment.pk}})" style="color: black; font-style: italic;">评论</a>
+		<a href="javascript:showDivFun({{comment.pk}})" style="color: grey; font-style: italic;">评论</a>
 	    </div>
             </div>
             </li>
