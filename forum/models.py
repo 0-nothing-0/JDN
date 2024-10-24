@@ -9,7 +9,6 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db.models import signals
 from django.urls import reverse_lazy
 
-
 # Create your models here.
 
 #每个模型被表示为 django.db.models.Model 类的子类。
@@ -170,6 +169,9 @@ class Comment(models.Model):  # 评论
 
     def get_absolute_url(self):
         return reverse_lazy('post_detail', kwargs={"post_pk": self.post.pk})
+    
+    def get_like_url(self):
+        return reverse_lazy('add_to_favorites', kwargs={"post_pk": self.pk})
 
 
 class Message(models.Model):  # 好友消息

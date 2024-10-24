@@ -118,11 +118,9 @@
                                     <a href="" target="_blank" title="1 分钟前">{{ post.last_response }}最后回复</a>
                                 </div>
                             </div>
-                        </td>
+                        </td>                    
                         <td width="11%" align="right" valign="middle" class="reply">
-                            <form action="{% url 'add_to_favorites' post.pk %}" method="post">
-                                <button type="submit">收藏</button>
-                            </form>
+                            <a class="title" href="{{ post.get_like_url }}" rel="bookmark" title="">收藏</a>
                         </td>
                         <td width="11%" align="right" valign="middle" class="reply">
                             <a href="" target="_blank">{{ post.responce_times }}/{{ post.view_times }}</a>
