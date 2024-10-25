@@ -137,6 +137,12 @@ class Post(models.Model):  # 文章
     def get_absolute_url(self):
         return reverse_lazy('post_detail', kwargs={"post_pk": self.pk})
 
+    def get_like_url(self):
+        return reverse_lazy('add_to_favorites', kwargs={"post_pk": self.pk})
+    
+    def delete_like_url(self):
+        return reverse_lazy('remove_from_favorites', kwargs={"post_pk": self.pk})
+    
 class Lrelation(models.Model):
     user = models.ForeignKey(LoginUser, on_delete=models.PROTECT,related_name='user_relations')  # 所属板块
     post = models.ForeignKey(Post, on_delete=models.PROTECT)  # 所属板块

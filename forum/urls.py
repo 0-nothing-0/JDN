@@ -7,6 +7,7 @@ from forum.views import IndexView, PostCreate, PostUpdate, PostDelete, MessageCr
     UserPostView
 from .views import papers_list
 from .views import add_to_favorites
+from .views import remove_from_favorites
 
 from django.contrib import admin
 
@@ -65,4 +66,5 @@ urlpatterns = [
     re_path(r'^uploadimage/', views.upload_image, name='upload_image'),
     re_path(r'^papers/$', papers_list, name='papers_list'),
     re_path(r'^add_to_favorites/(?P<post_pk>\d+)/$', add_to_favorites, name='add_to_favorites'),
+    re_path(r'^remove-from-favorites/(?P<post_pk>\d+)/$', remove_from_favorites, name='remove_from_favorites'),
 ]

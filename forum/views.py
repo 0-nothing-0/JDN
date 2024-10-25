@@ -259,10 +259,18 @@ class IndexView(BaseMixin, ListView):
         return super(IndexView, self).get_context_data(**kwargs)
 
 def add_to_favorites(request, post_pk):
-    if request.method == "POST" and request.user.is_authenticated:
+    if request.user.is_authenticated:
         post = get_object_or_404(Post, pk=post_pk)
         Lrelation.objects.get_or_create(user=request.user, post=post)
     return redirect('index')  # 重定向回首页或其他页面
+
+def remove_from_favorites(request, post_pk):
+    if request.user.is_authenticated:
+        post = get_object_or_404(Post, pk=post_pk)
+        relation = Lrelation.objects.filter(user=request.user, post=post)
+        if relation.exists():
+            relation.delete()
+    return redirect('index')
 
 def postdetail(request, post_pk):
     """帖子详细页面"""

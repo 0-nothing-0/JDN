@@ -78,6 +78,9 @@
                     </div>
                 </td>
                 <td width="11%" align="right" valign="middle" class="reply">
+                    <a class="title" href="{{ post.delete_like_url }}" rel="bookmark" title="">取消</a>
+                </td>
+                <td width="11%" align="right" valign="middle" class="reply">
                     <a href="" target="_blank">{{ post.responce_times }}/{{ post.view_times }}</a>
                 </td>
             </tr>
@@ -119,9 +122,15 @@
                                 </div>
                             </div>
                         </td>                    
+                        {% if user.is_authenticated %}
                         <td width="11%" align="right" valign="middle" class="reply">
                             <a class="title" href="{{ post.get_like_url }}" rel="bookmark" title="">收藏</a>
                         </td>
+                        {%else%}
+                        <td width="11%" align="right" valign="middle" class="reply">
+                            <a class="title" href="{% url 'user_login' %}" rel="bookmark" title="">收藏</a>
+                        </td>
+                        {%endif%}
                         <td width="11%" align="right" valign="middle" class="reply">
                             <a href="" target="_blank">{{ post.responce_times }}/{{ post.view_times }}</a>
                         </td>
