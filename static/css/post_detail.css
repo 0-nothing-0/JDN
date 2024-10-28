@@ -1,79 +1,81 @@
-#all_post
-{
-	margin:0 auto; 
-	width:90%;  
-	border:1px solid #F00;
+/* 主要容器样式 */
+#all_post {
+    margin: 0 auto;
+    width: 90%;
+    background-color: white; /* 设置背景颜色为白色 */
+    padding: 20px; /* 添加内边距 */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* 添加轻微的阴影 */
 }
 
-.post
-{
-	margin:15px 15px;
-	border:1px solid #500;
+/* 帖子样式 */
+.post {
+    margin: 20px 0; /* 调整帖子间距 */
+    border: 1px solid #ccc; /* 使用更柔和的灰色边框 */
+    border-radius: 8px; /* 添加圆角 */
+    padding: 10px; /* 增加内边距以提升内容展示 */
+    background-color: #f9f9f9; /* 轻微背景色增强层次感 */
 }
 
-.avatar
-{
-	float:left;
-	width:15%;
-	height:500px;
-	border:1px solid #300;
+/* 头像样式 */
+.avatar, .avatar_comment {
+    float: left;
+    width: 60px; /* 统一头像大小 */
+    height: 60px; /* 设置头像高度 */
+    border-radius: 50%; /* 圆形头像 */
+    margin-right: 10px; /* 与内容间隔 */
+    border: none; /* 移除边框 */
 }
 
-.content
-{
-	float:left;
-	width:75%;
-	
-	border:1px solid ;
-	border-color: grey;
+/* 内容样式 */
+.content, .content_comment {
+    float: left;
+    width: calc(100% - 70px); /* 计算剩余宽度 */
+    padding: 1em; /* 增加内边距以提升阅读体验 */
+    border-radius: 8px; /* 添加圆角 */
+    background-color: white; /* 背景设为白色提升清晰度 */
 }
 
-.comment
-{
-	height:200px;margin:15px 15px;border:1px solid #300;
-}
-
-.avatar_comment
-{
-	float:left;
-	width:15%;
-	height:200px;
-	border:1px solid #300;
-}
-
-.content_comment
-{
-	float:left;
-	width:75%;
-	height:200px; 
-	border:1px solid gray
-}
-
-.floor
-{
-	float:left;
- 	width:5%;
+/* 评论样式 */
+.comment {
+    padding: 10px; /* 增加内边距 */
+    background-color: #f0f0f0; /* 设置评论背景颜色 */
+    border-radius: 8px; /* 圆角风格 */
+    margin: 10px 0; /* 调整评论间距 */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* 添加阴影效果 */
+    transition: all 0.3s ease-in-out; /* 添加过渡效果 */
 }
 
 
+/* 底部楼层样式 */
+.floor {
+    float: left;
+    width: 100%; /* 楼层宽度调整为全宽 */
+    text-align: right; /* 文本对齐到右侧 */
+    color: #888; /* 设置文字颜色 */
+    font-size: 14px; /* 设置字体大小 */
+}
+
+/* 弹窗样式 */
 .mydiv {
-line-height:20px;
-border: 1px solid #0080FF;
-font-size: 12px;
-z-index:999;
-width: 30%;
-height: 220px;
-left:35%;
-top:40%;
-background-color: #FFF;
-margin-left:-150px!important;/*FF IE7 该值为本身宽的一半 */
-margin-top:-60px!important;/*FF IE7 该值为本身高的一半*/
-margin-top:0px;
-position:fixed!important;/* FF IE7*/
-position:absolute;/*IE6*/
+    padding: 20px; /* 内边距 */
+    border-radius: 8px; /* 圆角 */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* 阴影效果增加立体感 */
+    font-size: 14px; /* 字体大小 */
 }
 
+/* 添加过渡效果 */
+.avatar, .avatar_comment, .post, .comment {
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
+}
 
+.avatar:hover, .avatar_comment:hover, .post:hover, .comment:hover {
+    transform: scale(1.01); /* 鼠标悬停时轻微放大 */
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2); /* 悬停时增加阴影效果 */
+}
 
-
-
+/* 增强文本可读性 */
+.content, .content_comment {
+    color: #333; /* 深灰色文本增强对比度 */
+    font-size: 16px; /* 增大字体大小 */
+    line-height: 1.5; /* 增加行间距 */
+}

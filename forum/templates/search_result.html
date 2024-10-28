@@ -3,11 +3,44 @@
 {% block content %}
 
 
-<div id="all_post">
-	{% for post in post_list %}
-			<a href="{{ post.get_absolute_url }}">{{ forloop.counter }}:{{ post.title }}</a><br>
-	{% endfor %}
+<div class="list" id="all_post" style="position: relative;">
+    <h1 class="clearfix" style="font-family: '黑体';">所有帖子：</h1>
+    
+    {% if user.is_authenticated %}
+        {% if post_list %}
+            {% for post in post_list %}
+                <table width="100%" style="font-family: '黑体';">
+                    <tbody>
+                        <tr id="post">
+                            <td width="10%" class="avatar" valign="middle">
+                                <a href="{{ post.get_absolute_url }}" title="">
+                                    <img src="{{ post.column.img }}" alt="帖子图片">
+                                </a>
+                            </td>
+                            <td width="auto" valign="middle" class="mainbox">
+                                <div class="title">
+                                    <a class="title" href="{{ post.get_absolute_url }}" rel="bookmark" title="" style="font-family: '黑体';">{{ forloop.counter }}: {{ post.title }}</a>
+                                </div>
+                                <div class="post-info" style="font-family: '黑体';">
+                                    <span>作者: {{ post.author }}</span><br>
+                                    <span>发表时间: {{ post.created_at|date:"Y-m-d H:i:s" }}</span><br>
+                                    <span>评论次数: {{ post.comment_count }}</span><br>
+                                    <span>浏览次数: {{ post.view_count }}</span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            {% endfor %}
+        {% else %}
+            <h3 style="font-family: '黑体';">没有帖子可显示。</h3>
+        {% endif %}
+    {% else %}
+        <p style="font-family: '黑体';">请登录后查看帖子。</p>
+    {% endif %}
 </div>
+
+
 
 
 {% endblock %}        

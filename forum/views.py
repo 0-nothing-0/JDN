@@ -639,4 +639,29 @@ def upload_image(request):
     else:
         raise Http404()
 
+class UserPageView(BaseMixin, ListView):
+    """用户页面视图"""
+    template_name = 'notice_list.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(UserPageView, self).get_context_data(**kwargs)
+        
+        # 获取当前登录的用户信息
+        if self.request.user.is_authenticated:
+            user_obj = self.request.user  # 当前登录用户
+            context['user'] = user_obj  # 将用户对象传递到模板
+            
+            # 获取好友列表
+            context['friends'] = user_obj.friends.all()
+            
+            # 用户的其他信息
+            context['levels'] = user_obj.levels
+            context['avatar'] = user_obj.avatar
+            context['privilege'] = user_obj.privilege
+            context['like_url'] = user_obj.get_like_url()
+            
+        else:
+            context['user'] = None  # 如果未登录，则用户信息为None
+        
+        return context
+    
