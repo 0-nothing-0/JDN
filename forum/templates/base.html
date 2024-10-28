@@ -29,6 +29,7 @@
                 <!-- 导航 Start -->
                                                 <div class="nav">
     <div class="wrap clearfix">
+{% block announcement %}
          <div class="discuztips clearfix floatl">
                     <div class="toptips clearfix">
                         <div id="an" class="clearfix">
@@ -43,12 +44,14 @@
                     <script type="text/javascript">announcement();</script>
 
                                     </div>
+{% endblock %}
 
 {%block user %} 
 {% endblock %}
-        
+    
     </div>
 </div>
+{% block searchbar %}    
                 <!-- 导航 END -->
 
                 <div class="header-content">
@@ -91,12 +94,13 @@
                                           <!-- 用户账户 End -->
                     </div>
                 </div>
-
+{% endblock %}
                 <!-- 子导航 Start -->
                     <div class="subnav">
     <div class="wrap">
         <!-- text menu start -->
         <div class="bo_nav clearfix" id="category">
+
 	{% block nav %} 
 	{% endblock %}
                          
@@ -127,7 +131,7 @@
         
     
 
-    
+{% block pagefoot %}  
 <div class="footer clearfix">
     	<div class="wrap">
             <div class="nav">
@@ -166,5 +170,5 @@
 
 <div id="yunpan_image_hover_container" style="z-index: 410; left: 298px; top: 187px;"><style>            #yunpan_image_hover_container {                width: 23px;                height: 100px;                background-image: url(chrome-extension://olmanbchlogbfhhgimnombopppdooidm/images/hover-vertical.png);                background-position: -33px 0;            }            #yunpan_image_hover_container:hover {background-image: url(chrome-extension://olmanbchlogbfhhgimnombopppdooidm/images/hover-vertical.png);}            </style></div>
 <?php wp_footer(); ?>
-
+{% endblock %}
 </body></html>
