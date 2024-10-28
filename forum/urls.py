@@ -5,7 +5,7 @@ from django.urls import path
 from django.contrib.auth.decorators import login_required
 from forum.views import IndexView, PostCreate, PostUpdate, PostDelete, MessageCreate, MessageDetail, SearchView, \
     UserPostView
-from .views import papers_list
+from .views import view_eprints,view_eccvs,view_iclrs,view_sps
 from .views import add_to_favorites
 from .views import remove_from_favorites
 
@@ -64,7 +64,10 @@ urlpatterns = [
     re_path(r'^search/$', SearchView.as_view(), name='search'),
     re_path(r'^validate/$', views.validate, name='validate'),
     re_path(r'^uploadimage/', views.upload_image, name='upload_image'),
-    re_path(r'^papers/$', papers_list, name='papers_list'),
     re_path(r'^add_to_favorites/(?P<post_pk>\d+)/$', add_to_favorites, name='add_to_favorites'),
     re_path(r'^remove-from-favorites/(?P<post_pk>\d+)/$', remove_from_favorites, name='remove_from_favorites'),
+    re_path(r'^paper/$', view_eprints, name='eprints_list'),
+    re_path(r'^eccv/$', view_eccvs, name='eccvs_list'),
+    re_path(r'^iclr/$', view_iclrs, name='iclrs_list'),
+    re_path(r'^sp/$', view_sps, name='sps_list'),
 ]

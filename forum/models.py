@@ -15,16 +15,6 @@ from django.urls import reverse_lazy
 #每个模型有许多类变量，它们都表示模型里的一个数据库字段。
 #每个字段都是 Field 类的实例 - 比如，字符字段被表示为 CharField ，日期时间字段被表示为 DateTimeField 。这将告诉 Django 每个字段要处理的数据类型。
 #每个 Field 类实例变量的名字（例如 levels 或 avatar）也是字段名，所以最好使用对机器友好的格式。你将会在 Python 代码里使用它们，而数据库会将它们作为列名。
-
-class Paper(models.Model):
-    paper_id = models.CharField(max_length=100, unique=True)
-    title = models.CharField(max_length=500)
-    authors = models.TextField()
-    link = models.URLField()
-
-    def __str__(self):
-        return self.title
-
         
 class LoginUser(AbstractUser):
     levels = models.PositiveIntegerField(default=0, verbose_name=u'积分')

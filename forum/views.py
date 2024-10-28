@@ -14,10 +14,6 @@ from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from forum.models import Nav, Post, Comment, Application, LoginUser, Notice, Column, Message,Lrelation
 
-
-from .models import Paper
-
-
 from forum.form import MessageForm, PostForm, LoginUserForm
 from django.urls import reverse_lazy
 
@@ -32,20 +28,48 @@ from django.core.cache import cache
 
 from forum.validate import create_validate_code
 
+from paper.models import Paper as eprint
+from eccv.models import Paper as Eccvs
+from iclr.models import Paper as Iclrs
+from sp.models import Paper as SPs
+
+
+
+
 logger = logging.getLogger(__name__)
 
 PAGE_NUM = 50
 
 #每个视图必须要做的只有两件事：
 #返回一个包含被请求页面内容的 HttpResponse 对象，或者抛出一个异常，比如 Http404 。至于你还想干些什么，随便你。
-
-def papers_list(request):
-    papers = Paper.objects.all()
+    
+def view_eprints(request):
+    papers = eprint.objects.all().order_by('-id')[:8]
     emojis = ['😀', '😂', '🤔', '😍', '👍', '💥', '📘', '🔬']
     # Add random emoji to each paper
     papers_with_emojis = [(paper, random.choice(emojis)) for paper in papers]
-    return render(request, 'papers/papers.html', {'papers_with_emojis': papers_with_emojis})
-    
+    return render(request, 'papers/paper.html', {'papers_with_emojis': papers_with_emojis})
+
+def view_eccvs(request):
+    papers = Eccvs.objects.all().order_by('-id')[3:10]
+    emojis = ['😀', '😂', '🤔', '😍', '👍', '💥', '📘', '🔬']
+    papers_with_emojis = [(paper, random.choice(emojis)) for paper in papers]
+    return render(request, 'eccv/eccv.html', {'papers_with_emojis': papers_with_emojis})
+
+def view_iclrs(request):
+    papers = Iclrs.objects.all().order_by('-id')[3:10]
+    emojis = ['😀', '😂', '🤔', '😍', '👍', '💥', '📘', '🔬']
+    papers_with_emojis = [(paper, random.choice(emojis)) for paper in papers]
+    return render(request, 'iclr/iclr.html', {'papers_with_emojis': papers_with_emojis})
+
+
+def view_sps(request):
+    papers = SPs.objects.all().order_by('-id')[3:10]
+    emojis = ['😀', '😂', '🤔', '😍', '👍', '💥', '📘', '🔬']
+    papers_with_emojis = [(paper, random.choice(emojis)) for paper in papers]
+    return render(request, 'sp/sp.html', {'papers_with_emojis': papers_with_emojis})
+
+
 def get_online_ips_count():
     """统计当前在线人数（5分钟内，中间件实现于middle.py）"""
     online_ips = cache.get("online_ips", [])
@@ -566,3 +590,5 @@ def upload_image(request):
         return HttpResponse(res)
     else:
         raise Http404()
+
+
