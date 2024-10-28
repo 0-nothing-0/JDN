@@ -17,6 +17,7 @@ from forum.models import Nav, Post, Comment, Application, LoginUser, Notice, Col
 from forum.form import MessageForm, PostForm, LoginUserForm
 from django.urls import reverse_lazy
 
+from django.urls import reverse #changed
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
@@ -123,7 +124,10 @@ def userlogin(request, template_name='login.html'):
             login(request, user)
             user.levels += 1  # 登录一次积分加 1
             user.save()
-        return HttpResponseRedirect(next)
+            return HttpResponseRedirect(next)
+        else:
+            error_message = "用户名或密码错误"
+            return render(request, template_name, {'next': next, 'error_message': error_message})
     else:
         next = request.GET.get('next', None)
         if next is None:
@@ -183,6 +187,34 @@ def userregister(request):
         # next = reverse_lazy('index')
         return render(request, 'register.html')
 
+def confirm_delete_account(request):
+    """显示确认删除用户账户的页面"""
+    if request.method == 'POST':
+        if 'confirm' in request.POST:
+            user = request.user
+            user.delete()
+            logout(request)
+            return HttpResponseRedirect(reverse('index'))
+        elif 'cancel' in request.POST:
+            return HttpResponseRedirect(reverse('index'))
+    
+    response_html = """
+    <html>
+        <head>
+            <title>确认注销</title>
+        </head>
+        <body>
+            <p>是否确定注销用户？</p>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" name="confirm">确定</button>
+                <button type="submit" name="cancel">取消</button>
+            </form>
+        </body>
+    </html>
+    """
+    return HttpResponse(response_html)
+
 def forgotpassword(request):
     if request.method == 'POST':
         email = request.POST.get("email", "")
@@ -192,6 +224,7 @@ def forgotpassword(request):
         
         user = LoginUser.objects.filter(email=email).first()
         errors = []
+
         if user:
             if request.POST.get('resend_code'):
                 # 检查上次发送验证码的时间
@@ -233,10 +266,22 @@ def forgotpassword(request):
                     # 更新用户密码
                     user.set_password(new_password)
                     user.save()
-                    return HttpResponse(u"密码已成功重置！")
+                    response_html = """
+                    <html>
+                        <head>
+                            <meta http-equiv="refresh" content="5;url={% url 'index' %}" />
+                        </head>
+                        <body>
+                            <p>密码已成功重置！5秒后将自动跳转到主页。</p>
+                        </body>
+                    </html>
+                    """
+                    return HttpResponse(response_html)
         else:
             errors.append(u"用户不存在！")
+
         return render(request, 'forgot_password.html', {"errors": errors})
+
     else:
         return render(request, 'forgot_password.html')
 

@@ -88,10 +88,10 @@
 					</div>
 				</fieldset>
 				
-				<div id="remember-me" class="pull-left">
+				<!-- <div id="remember-me" class="pull-left">
 					<input type="checkbox" name="remember" id="remember" />
 					<label id="remember-label" for="remember">记住帐号</label>
-				</div>
+				</div> -->
 				
 				<div class="pull-right">
 					<button type="submit" class="btn btn-warning btn-large">
@@ -99,6 +99,12 @@
 					</button>
 					<input type="hidden" name="next" value="{{ next }}" />
 				</div>
+
+				{% if error_message %}
+				<div class="alert alert-danger" role="alert">
+					{{ error_message }}
+				</div>
+				{% endif %}
 			</form>
 			
 		</div> <!-- /login-content -->

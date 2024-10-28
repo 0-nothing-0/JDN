@@ -1,8 +1,20 @@
-{% if errors %}
-	注册失败！<br>
-	{% for error in errors %}
-		{{error}}<br>
-	{% endfor %}
-{% else %}
-	注册成功 OK！
-{% endif %}
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>操作结果</title>
+    {% if not errors %}
+        <meta http-equiv="refresh" content="5;url={% url 'index' %}" />
+    {% endif %}
+</head>
+<body>
+    {% if errors %}
+        注册失败！<br>
+        {% for error in errors %}
+            {{ error }}<br>
+        {% endfor %}
+    {% else %}
+        注册成功 OK！5秒后将自动跳转到主页。
+    {% endif %}
+</body>
+</html>
