@@ -7,11 +7,17 @@ import random #changed
 from io import BytesIO
 
 from django.shortcuts import render
+from django.shortcuts import redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse #changed
 from django.http.response import Http404
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
-from forum.models import Nav, Post, Comment, Application, LoginUser, Notice, Column, Message
+from forum.models import Nav, Post, Comment, Application, LoginUser, Notice, Column, Message,Lrelation
+
+
+from .models import Paper
+
+
 from forum.form import MessageForm, PostForm, LoginUserForm
 from django.urls import reverse_lazy
 
@@ -30,7 +36,16 @@ logger = logging.getLogger(__name__)
 
 PAGE_NUM = 50
 
+#每个视图必须要做的只有两件事：
+#返回一个包含被请求页面内容的 HttpResponse 对象，或者抛出一个异常，比如 Http404 。至于你还想干些什么，随便你。
 
+def papers_list(request):
+    papers = Paper.objects.all()
+    emojis = ['😀', '😂', '🤔', '😍', '👍', '💥', '📘', '🔬']
+    # Add random emoji to each paper
+    papers_with_emojis = [(paper, random.choice(emojis)) for paper in papers]
+    return render(request, 'papers/papers.html', {'papers_with_emojis': papers_with_emojis})
+    
 def get_online_ips_count():
     """统计当前在线人数（5分钟内，中间件实现于middle.py）"""
     online_ips = cache.get("online_ips", [])
@@ -143,7 +158,6 @@ def userregister(request):
         # if next is None:
         # next = reverse_lazy('index')
         return render(request, 'register.html')
-    
 
 def forgotpassword(request):
     if request.method == 'POST':
@@ -154,7 +168,6 @@ def forgotpassword(request):
         
         user = LoginUser.objects.filter(email=email).first()
         errors = []
-
         if user:
             if request.POST.get('resend_code'):
                 # 检查上次发送验证码的时间
@@ -199,12 +212,9 @@ def forgotpassword(request):
                     return HttpResponse(u"密码已成功重置！")
         else:
             errors.append(u"用户不存在！")
-
         return render(request, 'forgot_password.html', {"errors": errors})
-
     else:
         return render(request, 'forgot_password.html')
-
 
 class BaseMixin(object):
     def get_context_data(self, *args, **kwargs):
@@ -229,16 +239,30 @@ class IndexView(BaseMixin, ListView):
     """首页"""
     model = Post
     queryset = Post.objects.all()
+    #载入 polls/index.html 模板文件，并且向它传递一个上下文(context)。这个上下文是一个字典，它将模板内的变量映射为 Python 对象。
     template_name = 'index.html'
     context_object_name = 'post_list'
     paginate_by = PAGE_NUM  # 分页--每页的数目
-
+        
     def get_context_data(self, **kwargs):
         kwargs['foruminfo'] = get_forum_info()
         kwargs['online_ips_count'] = get_online_ips_count()
         kwargs['hot_posts'] = self.queryset.order_by("-responce_times")[0:10]
+        
+        if self.request.user.is_authenticated:  # Check if the user is logged in
+            user_obj = LoginUser.objects.get(username=self.request.user.username)
+            like_relations = user_obj.user_relations.all()
+            kwargs['like_posts'] = [like_relation.post for like_relation in like_relations]
+        else:
+            kwargs['like_posts'] = []  # If not authenticated, pass an empty list
+        
         return super(IndexView, self).get_context_data(**kwargs)
 
+def add_to_favorites(request, post_pk):
+    if request.method == "POST" and request.user.is_authenticated:
+        post = get_object_or_404(Post, pk=post_pk)
+        Lrelation.objects.get_or_create(user=request.user, post=post)
+    return redirect('index')  # 重定向回首页或其他页面
 
 def postdetail(request, post_pk):
     """帖子详细页面"""
@@ -284,11 +308,14 @@ def shownotice(request):
     """消息通知"""
     notice_list = Notice.objects.filter(receiver=request.user, status=False)
     myfriends = LoginUser.objects.get(username=request.user).friends.all()
+    User_obj = LoginUser.objects.get(username=request.user)
     return render(request, 'notice_list.html', {
+        'user': User_obj,
         'notice_list': notice_list,
         'myfriends': myfriends
     })
-
+#「载入模板，填充上下文，再返回由它生成的 HttpResponse 对象」是一个非常常用的操作流程。
+# 于是 Django 提供了一个快捷函数（render），我们用它来重写 index() 视图：
 
 def noticedetail(request, pk):
     """具体通知"""
@@ -451,6 +478,14 @@ def columndetail(request, column_pk):
         'column_posts': column_posts
     })
 
+def likedetail(request):
+    User_obj = LoginUser.objects.get(username=request.user)
+    like_relations = User_obj.user_relations.all()
+    like_posts = [like_relation.post for like_relation in like_relations]
+    return render(request, 'user_likes.html', {
+        'user_obj': User_obj,
+        'like_posts': like_posts
+    })
 
 class SearchView(ListView):
     """搜索"""
