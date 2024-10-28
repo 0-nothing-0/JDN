@@ -325,6 +325,9 @@ class IndexView(BaseMixin, ListView):
         else:
             kwargs['like_posts'] = []  # If not authenticated, pass an empty list
         
+        papers = eprint.objects.all().order_by('-id')[:8]
+        kwargs['papers_list'] = papers
+        
         return super(IndexView, self).get_context_data(**kwargs)
 
 def add_to_favorites(request, post_pk):

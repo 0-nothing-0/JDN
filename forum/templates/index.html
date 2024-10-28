@@ -244,7 +244,7 @@
                 </a>
             </h2>
             <div class="describe">
-                <a href="{% url 'sps_list' %}">“https://eprint.iacr.org/”</a>
+                <a href="{% url 'sps_list' %}">“S&P 2024”</a>
             </div>
         </div>
     </li>
@@ -261,7 +261,7 @@
                 </a>
             </h2>
             <div class="describe">
-                <a href="{% url 'eccvs_list' %}">“https://eprint.iacr.org/”</a>
+                <a href="{% url 'eccvs_list' %}">“ECCV 2024”</a>
             </div>
         </div>
     </li>
@@ -278,7 +278,7 @@
                 </a>
             </h2>
             <div class="describe">
-                <a href="{% url 'iclrs_list' %}">“https://eprint.iacr.org/”</a>
+                <a href="{% url 'iclrs_list' %}">“ICLR 2024”</a>
             </div>
         </div>
     </li>    
@@ -297,21 +297,28 @@
     -->
 </div>
 
-<!--
+
 <div class="box sidewidget">
-    <h5 class="clearfix">论坛统计</h5>
+    <h5 class="clearfix">密码学实时新闻</h5>
     <div class="list sidebox">
         <ul>
-            <li>在线人数: {{ online_ips_count }}</li>
-            <li>注册人数：{{ foruminfo.account_number }}</li>
-            <li>帖子数：{{ foruminfo.post_number }}</li>
-            <li>今日: {{ foruminfo.today_post_number }}</li>
-            <li>昨日: {{ foruminfo.lastday_post_number }}</li>
-            
-                    </ul>
+            {% for paper in papers_list %}
+            <li class="bo_59 clearfix">
+                <a href="{{ paper.link }}">
+                <strong>{{ paper.title }}</strong>
+                <br> 
+                by {{ paper.authors }}
+                </a>
+                <br>
+                <br>
+            </li>
+            {% empty %}
+            <li class="bo_59 clearfix">No news found.</li>
+            {% endfor %}            
+        </ul>
     </div>
 </div>
--->
+
 <!-- BBS状态 End -->
 
 <!-- BBS微信QR码 Start -->
