@@ -50,9 +50,9 @@
 
 <!-- End -->
 
-<div id="all_post" >
-	<div class="post"> 
-		<div class="avatar" style="margin-bottom: 20%;">
+<div id="all_post" style="height: 100%;">
+	<div class="post" style="border: none;"> 
+		<div class="avatar" style="margin-bottom: 5%; background-color: white;">
 		<img src="{{ post.author.avatar}}" style="display: block; margin-left: auto;margin-right: auto;"><br>
                 <div style="font-size: 150%; color:black; text-align: center;">{{ post.author.username }}</div>
 		<div style="color:gray; text-align: center;">积分：{{ post.author.levels }}</div>
@@ -70,7 +70,7 @@
 		      {% endifnotequal %}
 		{% endif %}
 		</div>
-		<div class="content" style="margin-left: 2%; width: 80%; border: none;">
+		<div class="content" style="margin-left: 2%; width: 80%; border: 1xp black solid; margin-bottom: 5%; min-height: 20em;padding-left: 1%;padding-right: 1%;border-radius: 1em;">
 			<span style="color: black; font-size: 2em;">{{ post.title }}</span>
 			<div style="color: black; font-size: 1.5em;">
                 {% autoescape off %}
@@ -78,32 +78,35 @@
                 {% endautoescape %}
             </div>
 		</div>
-	</div>
-	<!-- -------------------------评论------------------------- start -->
-	<div class="well">
-    <div class="vmaig-comment">
-        <!--
-        <div class="vmaig-comment-tx">
-            {% if user.img%}
-            <img src="{{user.img}}" width="40"></img>
-            {%else%}
-            <img src="http://vmaig.qiniudn.com/image/tx/tx-default.jpg" width="40"></img>
-            {%endif%}
-        </div>
-    -->
-        <div class="vmaig-comment-edit clearfix">
-            <form id="vmaig-comment-form" method="post" role="form">
-                {% csrf_token %}
-                <textarea id="comment2" name="comment" class="form-control" rows="4" style="width: 75%;border-radius: 1em;padding: 1%;margin-left: 2%" placeholder="在这里留下你的评论吧！"></textarea><br/>
-                <button type="submit" class="btn btn-vmaig-comments pull-right" style="display: block;margin: auto; background-color: white;color: black; border: 2xp;border-radius: 1em;">提&nbsp;交</button>
-            </form>
-        </div>
 
+	<!-- -------------------------评论------------------------- start -->
+	    <div class="well">
+            <div class="vmaig-comment" style="margin-bottom: 15%;">
+            <!--
+            <div class="vmaig-comment-tx">
+                {% if user.img%}
+                <img src="{{user.img}}" width="40"></img>
+                {%else%}
+                <img src="http://vmaig.qiniudn.com/image/tx/tx-default.jpg" width="40"></img>
+                {%endif%}
+            </div>
+        -->
+                <div class="vmaig-comment-edit clearfix">
+                <form id="vmaig-comment-form" method="post" role="form">
+                    {% csrf_token %}
+                    <textarea id="comment2" name="comment" class="form-control" rows="4" style="width: 75%;border-radius: 1em;padding: 1%;margin-left: 10%;margin-right: 10%;" placeholder="在这里留下你的评论吧！"></textarea><br/>
+                    <button type="submit" class="btn btn-vmaig-comments pull-right" style="display: block;margin: auto; background-color: white;color: black; border: 2xp;border-radius: 1em;">提&nbsp;交</button>
+                </form>
+                </div>    
+
+	        </div>
+
+        
         <ul>
             {% for comment in comment_list%}
             <li>
-	    <div class="comment">
-            <div class="avatar_comment">
+	    <div class="comment" style="border: none;">
+            <div class="avatar_comment" style="background-color: white; height: 10em;width: 8em;">
                 {% if comment.author.avatar %}
                 	<img src={{comment.author.avatar}} width="40"></img><br>
                 {%else%}
@@ -121,7 +124,7 @@
 			    {% endifnotequal %}
 			{% endif %}
             </div>
-            <div class="content_comment">
+            <div class="content_comment" style="margin-left: 2%;border-radius: 1em;padding: 1%;margin-bottom: 2%;">
                 <p>{% if comment.comment_parent %}回复{{comment.comment_parent.author}} 发表于{{comment.comment_parent.created_at|date:"Y-m-d H:i:s"}}的内容《{{comment.comment_parent.content}}》; {% endif %}{{comment.created_at|date:"Y-m-d H:i:s" }}</p>
                 <p style="font-size:small;color: black;">
                     {% autoescape on%}
@@ -133,10 +136,11 @@
 	    <div class="floor">
 		<a href="javascript:showDivFun({{comment.pk}})" style="color: grey; font-style: italic;">评论</a>
 	    </div>
-            </div>
+            </div><br/>
             </li>
             {% endfor%}
         </ul>
+
     </div>
 </div>
 

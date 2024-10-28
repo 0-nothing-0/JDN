@@ -334,7 +334,7 @@ class UserPostView(ListView):
     def get_queryset(self):
         user_posts = Post.objects.filter(author=self.request.user)
         return user_posts
-
+    
 
 class PostCreate(CreateView):
     """发帖"""
@@ -349,10 +349,8 @@ class PostCreate(CreateView):
 
     def form_valid(self, form):
         # 此处有待加强安全验证
-        validate = self.request.POST.get('validate', None)
         formdata = form.cleaned_data
-        if self.request.session.get('validate', None) != validate:
-            return HttpResponse("验证码错误！<a href='/'>返回</a>")
+        
         user = LoginUser.objects.get(username=self.request.user.username)
         # form.instance.author = user
         # form.instance.last_response  = user
