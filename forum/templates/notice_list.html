@@ -13,13 +13,58 @@
 请先登录<a href="{% url 'user_login' %}" hidefocus="true" title="登陆">登陆</a>
 还没有账号？<a href="{% url 'user_register' %}" hidefocus="true" title="注册">点这里注册</a>
 {%else%}
-<img src="{{user.avatar}}" alt="avatar" class ="avatar-container rounded-circle" id="user-avatar" title="更改头像"> 
+<script>
+    function openModal() {
+    document.getElementById("change_avatar").style.display = "block";
+}
+
+function closeModal() {
+    document.getElementById("change_avatar").style.display = "none";
+}
+
+// 点击模态外部关闭模态
+window.onclick = function(event) {
+    var modal = document.getElementById("change_avatar");
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+</script>
+<img src="{{user.avatar}}" alt="avatar" class ="avatar-container rounded-circle" id="user-avatar" title="更改头像" onclick="openModal()"> 
 <a href="{% url 'delete_account'%}" hidefocus = "true" title="delete_account">注销账户</a>
 <a href="{% url 'user_logout'%}" hidefocus="true" title="logout">退出登录</a>
-
+<!-- 模态窗口 -->
+<div id="change_avatar" class="modal">
+    <div class="modal-content">
+        <!-- 模态头部 -->
+        <div class="modal-header">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>更改头像</h2>
+        </div>
+        <!-- 模态主体内容 -->
+        <div class="modal-body">
+            <p>在这里上传您的新头像:</p>
+            <form id="avatar-form" action="{% url 'upload_avatar' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" id="avatar-input" name="avatar" accept="image/*" required onchange="previewAvatar(this)">
+                <button type="submit">上传</button>
+            </form>
+            <!-- 显示上传后的头像预览 -->
+            <div class="avatar-preview">
+                <img id="avatar-preview-img" src="{{ user.avatar.url }}" alt="预览头像">
+            </div>
+        </div>
+        <!-- 模态底部 -->
+        <div class="modal-footer">
+            <button class="btn-cancel" onclick="closeModal()">取消</button>
+        </div>
+    </div>
+</div>
 
 {%endif%}
 {%endblock%}
 
 {%block pagefoot%}
 {%endblock%}
+
+
