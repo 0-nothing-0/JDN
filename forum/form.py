@@ -78,3 +78,23 @@ class LoginUserForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+
+class AvatarUploadForm(forms.ModelForm):
+    class Meta:
+        model = LoginUser
+        fields = ['avatar']
+
+    def clean_avatar(self):
+        avatar = self.cleaned_data.get('avatar')
+
+        # 限制文件大小 (例如 2MB)
+        max_size = 2 * 1024 * 1024
+        if avatar.size > max_size:
+            raise forms.ValidationError("文件大小不得超过 2MB")
+
+        # 限制文件格式
+        valid_mime_types = ['image/jpeg', 'image/png']
+        if avatar.content_type not in valid_mime_types:
+            raise forms.ValidationError("仅支持 JPEG 和 PNG 格式的图片")
+
+        return avatar

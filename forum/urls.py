@@ -71,4 +71,9 @@ urlpatterns = [
     re_path(r'^eccv/$', view_eccvs, name='eccvs_list'),
     re_path(r'^iclr/$', view_iclrs, name='iclrs_list'),
     re_path(r'^sp/$', view_sps, name='sps_list'),
+    re_path(r'^update_avatar/', views.update_avatar, name='update_avatar')
 ]
+from django.conf import settings
+from django.conf.urls.static import static
+if settings.DEBUG:  # 仅在 DEBUG 模式下
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

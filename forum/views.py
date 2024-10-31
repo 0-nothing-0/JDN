@@ -1,5 +1,6 @@
 # coding:utf-8
 import os
+import shutil
 import time
 import logging
 import random #changed
@@ -663,5 +664,59 @@ class UserPageView(BaseMixin, ListView):
         else:
             context['user'] = None  # 如果未登录，则用户信息为None
         
-        return context
-    
+        return context    
+# def update_avatar(request):
+#     if request.method == 'POST' and request.FILES['avatar']:
+#         user = request.user
+#         user.avatar = request.FILES['avatar']  # 更新用户头像
+#         user.save()
+#         #messages.success(request, "头像上传成功！")
+#         return redirect('show_notice')  # 上传成功后重定向到用户页面
+#     return redirect('show_notice')
+from PIL import Image
+@login_required(login_url=reverse_lazy('user_login'))
+def update_avatar(request):
+    if request.method == 'POST' and request.FILES.get('avatar'):
+        user = request.user
+        avatar = request.FILES['avatar']
+        
+        # 生成新头像的文件路径，以用户名命名，并确保使用 .png 扩展名
+        avatar_filename = f"{user.username}.png"
+        avatar_path = os.path.join(settings.MEDIA_ROOT, 'avatars', avatar_filename)
+
+        # 删除旧头像文件（如果存在且路径不同）
+        if user.avatar.name and user.avatar.name != f"avatars/{avatar_filename}":
+            old_avatar_path = os.path.join(settings.MEDIA_ROOT, user.avatar.name)
+            if os.path.exists(old_avatar_path):
+                os.remove(old_avatar_path)
+
+        # 打开上传的图片文件并进行压缩和格式转换
+        try:
+            # 使用 Pillow 打开上传的图片
+            image = Image.open(avatar)
+            
+            # 定义压缩的尺寸
+            max_size = (300, 300)  # 最大宽高
+            image.thumbnail(max_size, Image.ANTIALIAS)  # 缩小图片并保持宽高比
+            
+            # 转换为 RGBA 模式以支持 PNG 格式（避免因格式不支持导致的错误）
+            if image.mode in ("RGBA", "P"):  # 如果图像本身有透明度
+                image = image.convert("RGBA")
+            else:
+                image = image.convert("RGB")  # 转换为支持 PNG 的 RGB 模式
+
+            # 保存图片为 PNG 格式
+            image.save(avatar_path, format='PNG', quality=85)  # 保存为 PNG 格式
+
+            # 更新用户的头像字段
+            user.avatar.name = f"avatars/{avatar_filename}"
+            user.save()
+
+            # 上传成功后重定向到用户页面
+            return redirect('show_notice')
+
+        except Exception as e:
+            print("压缩头像时出错：", e)
+            return redirect('show_notice')  # 可替换为返回错误消息的页面或提示
+
+    return redirect('show_notice')

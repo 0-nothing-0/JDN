@@ -8,18 +8,26 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db.models import signals
 from django.urls import reverse_lazy
-
+import os
+import uuid
 # Create your models here.
 
 #每个模型被表示为 django.db.models.Model 类的子类。
 #每个模型有许多类变量，它们都表示模型里的一个数据库字段。
 #每个字段都是 Field 类的实例 - 比如，字符字段被表示为 CharField ，日期时间字段被表示为 DateTimeField 。这将告诉 Django 每个字段要处理的数据类型。
 #每个 Field 类实例变量的名字（例如 levels 或 avatar）也是字段名，所以最好使用对机器友好的格式。你将会在 Python 代码里使用它们，而数据库会将它们作为列名。
+def avatar_upload_to(instance, filename):
+    # 使用 UUID 生成唯一文件名，保持原始文件扩展名
+    ext = filename.split('.')[-1]
+    filename = f"{uuid.uuid4()}.{ext}"
+    return os.path.join('avatars', filename)
+
         
 class LoginUser(AbstractUser):
     levels = models.PositiveIntegerField(default=0, verbose_name=u'积分')
-    avatar = models.CharField(
-        max_length=200, default='/static/tx/default.jpg', verbose_name=u'头像')
+    avatar = models.ImageField(
+        upload_to=avatar_upload_to, default='avatars/default.jpg', verbose_name='头像'
+    )
     privilege = models.CharField(max_length=200, default=0, verbose_name=u'权限')
     friends = models.ManyToManyField(
         'self', blank=True, null=True, related_name='friends')

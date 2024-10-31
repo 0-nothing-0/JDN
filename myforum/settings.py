@@ -157,6 +157,7 @@ X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 STATIC_URL = '/static/'
 
+
 # Additional locations of static files
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
