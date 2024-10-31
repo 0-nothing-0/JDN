@@ -1,6 +1,5 @@
 # coding:utf-8
 import os
-import shutil
 import time
 import logging
 import random #changed
@@ -270,10 +269,11 @@ def forgotpassword(request):
                     response_html = """
                     <html>
                         <head>
-                            <meta http-equiv="refresh" content="5;url={% url 'index' %}" />
+                            <meta http-equiv="refresh" content="3;url={% url 'index' %}" />
                         </head>
                         <body>
                             <p>密码已成功重置！5秒后将自动跳转到主页。</p>
+                            <p>如果没有跳转，点 <a href="{% url 'index' %}">这里</a> 返回主页。</p>
                         </body>
                     </html>
                     """
@@ -285,6 +285,80 @@ def forgotpassword(request):
 
     else:
         return render(request, 'forgot_password.html')
+
+def change_password(request):
+    if request.method == 'POST':
+        email = request.POST.get("email", "")
+        new_password = request.POST.get("new_password", "")
+        confirm_password = request.POST.get("confirm_password", "")
+        verification_code = request.POST.get("verification_code", "")
+        
+        user = LoginUser.objects.filter(email=email).first()
+        errors = []
+
+        if user:
+            if request.POST.get('resend_code'):
+                # 检查上次发送验证码的时间
+                last_sent_time = cache.get(f"{email}_last_sent_time")
+                current_time = time.time()
+                if last_sent_time and current_time - last_sent_time < 60:
+                    return JsonResponse({'status': 'error', 'message': '请稍后再试！每分钟只能发送一次验证码。'})
+                
+                # 生成6位数验证码
+                verification_code = ''.join(random.choices('0123456789', k=6))
+                
+                # 将验证码存储在缓存中，有效期为10分钟
+                cache.set(email, verification_code, 600)
+                cache.set(f"{email}_last_sent_time", current_time, 600)
+                
+                current_site = get_current_site(request)
+                domain = current_site.domain
+                title = u"密码修改"
+                message = u"您的验证码是：%s" % verification_code
+                from_email = None
+                try:
+                    send_mail(title, message, from_email, [email])
+                except Exception as e:
+                    logger.error(
+                        u'用户修改密码邮件发送失败:email: %s' % email, exc_info=True)
+                    return JsonResponse({'status': 'error', 'message': '发送邮件错误！'})
+                return JsonResponse({'status': 'success', 'message': '验证码已发送，请查收！'})
+            else:
+                # 验证验证码
+                cached_code = cache.get(email)
+                if cached_code != verification_code:
+                    errors.append(u"验证码错误！")
+                
+                # 验证新密码和确认密码是否一致
+                if new_password != confirm_password:
+                    errors.append(u"新密码和确认密码不一致！")
+                
+                if not errors:
+                    # 使用 set_password 方法更新用户密码
+                    user.set_password(new_password)
+                    user.save()
+                    # 注销用户并重定向到登录页面
+                    logout(request)
+                    login_url = reverse('user_login')
+                    # 返回包含自动跳转脚本的响应
+                    response_html = f"""
+                    <html>
+                        <head>
+                            <meta http-equiv="refresh" content="5;url={login_url}" />
+                        </head>
+                        <body>
+                            <p>密码已成功修改！5秒后将自动跳转到登录页面。</p>
+                        </body>
+                    </html>
+                    """
+                    return HttpResponse(response_html)
+        else:
+            errors.append(u"用户不存在！")
+
+        return render(request, 'change_password.html', {"errors": errors})
+
+    else:
+        return render(request, 'change_password.html')
 
 class BaseMixin(object):
     def get_context_data(self, *args, **kwargs):
@@ -665,14 +739,7 @@ class UserPageView(BaseMixin, ListView):
             context['user'] = None  # 如果未登录，则用户信息为None
         
         return context    
-# def update_avatar(request):
-#     if request.method == 'POST' and request.FILES['avatar']:
-#         user = request.user
-#         user.avatar = request.FILES['avatar']  # 更新用户头像
-#         user.save()
-#         #messages.success(request, "头像上传成功！")
-#         return redirect('show_notice')  # 上传成功后重定向到用户页面
-#     return redirect('show_notice')
+    
 from PIL import Image
 @login_required(login_url=reverse_lazy('user_login'))
 def update_avatar(request):
