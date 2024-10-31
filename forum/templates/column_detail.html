@@ -25,6 +25,7 @@
             <div class="list" id="threadlist" style="position: relative;">
                   <script src="/static/js/forum_moderate.js" type="text/javascript"></script>
                   <form method="post" autocomplete="off" name="moderate" id="moderate" action="">
+                        {%csrf_token %}
                         <input type="hidden" name="formhash" value="31213a3e">
                         <input type="hidden" name="listextra" value="">
                         <!-- {% if column_posts %} -->
@@ -34,7 +35,7 @@
                                     <tr id="post">
                                           <td width="10%" class="avatar" valign="middle">
                                                 <a href="{{ post.get_absolute_url }}" title="">
-                                                      <img src="{{ post.author.avatar }}">
+                                                      <img src="{{ post.author.avatar.url }}">
                                                 </a>
                                           </td>
                                           <td width="auto" valign="middle" class="mainbox">

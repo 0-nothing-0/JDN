@@ -77,9 +77,6 @@ function updateAvatar() {
 
 {% load static %}
 
-
-{% load static %}
-
 <!-- 模态窗口 -->
 <div id="change_avatar" class="modal">
     <div class="modal-content">
@@ -93,7 +90,7 @@ function updateAvatar() {
             <p>在这里上传您的新头像:</p>
             <!-- 显示用户的头像，如果用户没有头像，显示默认头像 -->
             <div class="avatar-preview">
-                <img id="avatar-preview-img" src="{{ user.avatar.url|default:'default-avatar.jpg' }}" alt="预览头像" style="width: 100px; height: 100px; border-radius: 50%;">
+                <img id="avatar-preview-img" src="{{ user.avatar.url }}" alt="预览头像" style="width: 200px; height: 200px;">
             </div>
 
             <!-- 上传头像表单 -->
