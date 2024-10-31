@@ -26,7 +26,7 @@ def avatar_upload_to(instance, filename):
 class LoginUser(AbstractUser):
     levels = models.PositiveIntegerField(default=0, verbose_name=u'积分')
     avatar = models.ImageField(
-        upload_to=avatar_upload_to, default='avatars/default.jpg', verbose_name='头像'
+        upload_to=avatar_upload_to, default='avatars/default.png', verbose_name='头像'
     )
     privilege = models.CharField(max_length=200, default=0, verbose_name=u'权限')
     friends = models.ManyToManyField(

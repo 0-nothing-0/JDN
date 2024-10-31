@@ -168,3 +168,6 @@ STATICFILES_FINDERS = (
 
 CELERY_BROKER_URL = 'redis://122.9.10.119:6379/0'
 CELERY_RESULT_BACKEND = 'redis://122.9.10.119:6379/0'
+
+MEDIA_URL = '/media/'  # URL前缀，用于访问用户上传的文件
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # 存储上传文件的实际路径

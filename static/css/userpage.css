@@ -9,7 +9,8 @@
 
 #user-avatar {
     display: block;
-    width: 100px; /* 设置合适的图片大小 */
+    width: 200px; /* 设置合适的图片大小 */
+    border-radius: 85%;
     height: auto;
 }
 
