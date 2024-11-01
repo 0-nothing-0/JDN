@@ -1,48 +1,93 @@
 {% extends "./base.html" %}
 
 {% block content %}
+{% load friendfilter %}
+<div class="wrap">
+    <div class="box" float="left" width="1000px" height="auto" style="padding: 20px;">
+        {% if user.is_authenticated %}
+        {% if search_type == 'user' %}
+        <h2>用户搜索结果</h2>
+        <ul>
+            {% for user_sr in results_list %}
+            <li class="friend-item">
+                <img src="{{ user_sr.avatar.url }}" alt="{{ user_sr.username }}的头像" class="friend-avatar">
+                <div class="friend-details">
+                    <p class="friend-username">{{ user_sr.username }}</p>
+                    <p class="friend-levels">积分: {{ user_sr.levels }}</p>
+                    {% if not user_sr|checkfriend:user %}
+                        <a href="{% url 'make_friend' user.username user_sr.username %}">加好友</a>
+                    {%else%}
+                        <p class="sd-msg"><a href="{% url 'send_message' user_sr.id %}">发送消息</a></p> 
+                    {%endif%}
+                </div>
+            </li>
+            <style>
+                .friends-list {
+                    list-style: none;
+                    padding: 0;
+                }
 
+                .friend-item {
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 15px;
+                }
 
-<div class="list" id="all_post" style="position: relative;">
-    <h1 class="clearfix" style="font-family: '黑体';">所有帖子：</h1>
-    
-    {% if user.is_authenticated %}
-        {% if post_list %}
-            {% for post in post_list %}
-                <table width="100%" style="font-family: '黑体';">
-                    <tbody>
-                        <tr id="post">
-                            <td width="10%" class="avatar" valign="middle">
-                                <a href="{{ post.get_absolute_url }}" title="">
-                                    <img src="{{ post.column.img }}" alt="帖子图片">
-                                </a>
-                            </td>
-                            <td width="auto" valign="middle" class="mainbox">
-                                <div class="title">
-                                    <a class="title" href="{{ post.get_absolute_url }}" rel="bookmark" title="" style="font-family: '黑体';">{{ forloop.counter }}: {{ post.title }}</a>
-                                </div>
-                                <div class="post-info" style="font-family: '黑体';">
-                                    <span>作者: {{ post.author }}</span><br>
-                                    <span>发表时间: {{ post.created_at|date:"Y-m-d H:i:s" }}</span><br>
-                                    <span>评论次数: {{ post.comment_count }}</span><br>
-                                    <span>浏览次数: {{ post.view_count }}</span>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                .friend-avatar {
+                    width: 80px;
+                    height: 80px;
+                    border-radius: 50%;
+                    margin-right: 20px;
+                }
+
+                .friend-details {
+                    flex: 1;
+                }
+            </style>
+            {% empty %}
+            <li>没有找到用户。</li>
             {% endfor %}
+        </ul>
         {% else %}
+        <div class="list" id="all_post" style="position: relative;">
+            <h1 class="clearfix" style="font-family: '黑体';">所有帖子：</h1>
+            {% for post in results_list %}
+            <table width="100%" style="font-family: '黑体';">
+                <tbody>
+                    <tr id="post">
+                        <td width="10%" class="avatar" valign="middle">
+                            <a href="{{ post.get_absolute_url }}" title="">
+                                <img src="{{ post.column.img }}" alt="帖子图片">
+                            </a>
+                        </td>
+                        <td width="auto" valign="middle" class="mainbox">
+                            <div class="title">
+                                <a class="title" href="{{ post.get_absolute_url }}" rel="bookmark" title=""
+                                    style="font-family: '黑体';">{{ post.title }}</a>
+                            </div>
+                            <div class="post-info" style="font-family: '黑体';">
+                                <span>作者: {{ post.author }}</span><br>
+                                <span>发表时间: {{ post.created_at|date:"Y-m-d H:i:s" }}</span><br>
+                                <span>评论次数: {{ post.responce_times }}</span><br>
+                                <span>浏览次数: {{ post.view_times }}</span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            {% empty %}
+
             <h3 style="font-family: '黑体';">没有帖子可显示。</h3>
+            {%endfor%}
+        </div>
         {% endif %}
-    {% else %}
+        {% else %}
         <p style="font-family: '黑体';">请登录后查看帖子。</p>
-    {% endif %}
+        {% endif %}
+    </div>
 </div>
 
+{% endblock %}
 
-
-
-{% endblock %}        
-        
-    
+{% block pagefoot %}
+{% endblock %}

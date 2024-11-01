@@ -77,40 +77,31 @@
 
                 <!-- 搜索 Start -->
                 <div class="search" id="scarch_bar">
-                    <form id="scarch_bar_form" method="get" autocomplete="off"
-                        onSubmit="searchFocus($(&#39;scarch_bar_txt&#39;))" action="{% url 'search' %}">
+                    <form id="scarch_bar_form" method="get" autocomplete="off" action="{% url 'search' %}">
+                        {% csrf_token %}
                         <div class="input">
                             <table width="100%" cellpadding="0" cellspacing="0" border="0">
                                 <tbody>
                                     <tr>
                                         <td>
-
                                             <input id="scarch_bar_txt" name="srchtxt" type="text" dir="ltr" size="35"
-                                                spellcheck="false" value="" autocomplete="off" x-webkit-speech=""
-                                                speech="" class=" xg1" placeholder="请输入搜索内容">
+                                                spellcheck="false" value="" autocomplete="off" class="xg1"
+                                                placeholder="请输入搜索内容">
                                         </td>
                                         <td width="40" align="right">
-                                            <a href="javascript:;" id="scarch_bar_type" class="showmenu xg1 xs2"
-                                                onClick="showMenu(this.id)" hidefocus="true">帖子</a>
+                                            <select id="search_type" name="search_type" class="xg1 xs2" style="border: none;">
+                                                <option value="post">帖子</option>
+                                                <option value="user">用户</option>
+                                            </select>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
-
                         </div>
-                        <button type="submit" name="searchsubmit" id="searchsubmit" sc="1" class="button"
-                            value="true"><strong class="xi2 xs2">搜索</strong></button>
-
+                        <button type="submit" name="searchsubmit" id="searchsubmit" class="button"><strong class="xi2 xs2">搜索</strong></button>
                     </form>
                 </div>
-                <ul id="scarch_bar_type_menu" class="p_pop" style="display: none;">
-                    <li><a href="javascript:;" rel="forum" class="curtype">帖子</a></li>
-                    <li><a href="javascript:;" rel="user">用户</a></li>
-                </ul>
-                <script type="text/javascript">
-                    //initSearchmenu('scarch_bar', '');
-                </script>
-                <!-- 搜索 End -->
+                
 
 
                 <!-- 用户账户 End -->

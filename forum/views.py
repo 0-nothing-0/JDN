@@ -724,19 +724,25 @@ def likedetail(request):
 class SearchView(ListView):
     """搜索"""
     template_name = 'search_result.html'
-    context_object_name = 'post_list'
+    context_object_name = 'results_list'
     paginate_by = PAGE_NUM
 
     def get_context_data(self, **kwargs):
         kwargs['q'] = self.request.GET.get('srchtxt', '')
+        kwargs['search_type'] = self.request.GET.get('search_type', 'post')
         return super(SearchView, self).get_context_data(**kwargs)
 
     def get_queryset(self):
-        # 获取搜索的关键字
+        # 获取搜索的关键字和搜索类型
         q = self.request.GET.get('srchtxt', '')
-        # 在帖子的标题和内容中搜索关键字
-        post_list = Post.objects.only('title', 'content').filter(Q(title__icontains=q) | Q(content__icontains=q))
-        return post_list
+        search_type = self.request.GET.get('search_type', 'post')
+
+        if search_type == 'user':
+            # 在用户的用户名和邮箱中搜索
+            return LoginUser.objects.filter(Q(username__icontains=q) | Q(email__icontains=q))
+        else:
+            # 在帖子的标题和内容中搜索
+            return Post.objects.only('title', 'content').filter(Q(title__icontains=q) | Q(content__icontains=q))
 
 
 def validate(request):
