@@ -1,0 +1,44 @@
+
+/* 单元格样式 */
+.mainbox-col {
+    padding: 20px; /* 添加内边距 */
+    vertical-align: middle;
+}
+
+.title-link-col {
+    display: block;
+    font-size: 1.5em; /* 增大字体 */
+    font-weight: bold; /* 加粗字体 */
+    margin-bottom: 10px; /* 添加底部间距 */
+    margin-left: 10px;
+    text-decoration: none; /* 去除下划线 */
+    color: #333; /* 深灰色字体 */
+    transition: color 0.3s; /* 添加颜色渐变效果 */
+}
+
+.title-link-col:hover {
+    color: #007BFF; /* 悬停时字体颜色变为蓝色 */
+    text-decoration: none; /* 去除下划线 */
+}
+
+/* 状态栏样式 */
+.status-col {
+    display: flex; /* 使用 flex 布局 */
+    justify-content: space-between; /* 让子元素两端对齐 */
+    font-size: 1em; /* 缩小字体 */
+    color: #666; /* 浅灰色字体 */
+    padding: 0px;
+}
+
+.manager-col{
+    display: block;
+    position: relative;
+    margin-left: 20px;
+    margin-bottom: 5px; /* 添加上下间距 */
+}
+.post-number {
+    display: block;
+    position: relative;
+    margin-right: 40px;
+    margin-bottom: 5px; /* 添加上下间距 */
+}

@@ -2,16 +2,18 @@
     position: relative;
     width: fit-content;
     height: fit-content;
-    left: 5%; /* 靠左 5% */
-    top: 5%;  /* 靠顶部 5% */
+    left: 10px; 
+    top: 10px;  
     cursor: pointer;
 }
 
 #user-avatar {
     display: block;
     width: 200px; /* 设置合适的图片大小 */
-    border-radius: 85%;
-    height: auto;
+    height: 200px;
+    border-radius: 90%;
+    padding: 0%;
+    margin-bottom: 30px; /* 添加 10px 的底部间隙 */
 }
 
 .hover-text {
@@ -61,4 +63,267 @@
     right: 10px;
     font-size: 24px;
     cursor: pointer;
+}
+/* 为按钮容器设置样式，使按钮左右对齐 */
+.button-container {
+    display: flex;
+    justify-content: space-between; /* 左右分布 */
+    margin-top: 10px;
+}
+
+.btn-cancel {
+    background-color: #f44336; /* 红色背景 */
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.btn-submit {
+    background-color: #4CAF50; /* 绿色背景 */
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.btn-cancel:hover {
+    background-color: #d32f2f; /* 深红色背景 */
+}
+
+.btn-submit:hover {
+    background-color: #388e3c; /* 深绿色背景 */
+}
+.user-info-container {
+    display: flex; /* 使用 flexbox 布局 */
+    align-items: flex-start; /* 将内容靠近顶部对齐 */
+    gap: 50px; /* 设置头像和用户信息之间的间距，可以根据需要调整 */
+}
+
+.user-details {
+    display: flex;
+    flex-direction: column; /* 使用户名和邮箱垂直排列 */
+}
+
+.username {
+    font-size: 3em; /* 增大用户名的字体 */
+    font-weight: bold; /* 用户名字体加粗 */
+    margin: 0; /* 去除默认外边距 */
+}
+
+.user-email {
+    font-size: 2em; /* 增大邮箱的字体 */
+    color: #666; /* 使用较浅的颜色 */
+    margin: 0; /* 去除默认外边距 */
+}
+.write-post {
+    font-size: 2em; /* 增大邮箱的字体 */
+    font-weight: bolder;
+    color: #666; /* 使用较浅的颜色 */
+    margin: 0; /* 去除默认外边距 */
+    margin-bottom: 30px;
+}
+.write-post:hover {
+    color: #1b67d1; /* 使用较浅的颜色 */
+}
+.user-levels {
+    font-size: 1.5em; /* 调整积分字体大小 */
+    color: #ea920f; /* 使用较浅的颜色 */
+    margin: 0; /* 去除默认外边距 */
+    margin-top: 10px;
+}
+
+.button-group-up {
+    display: flex;
+    flex-direction: row; /* 竖直排列 */
+    gap: 10px; /* 按钮之间的间距 */
+    position: relative; /* 绝对定位 */
+    right: -160%;
+    margin-top: 50px;
+}
+
+.btn-friends, .btn-messages {
+    background-color: #f05d08;
+    color: white;
+    border: none;
+    padding: 6px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 20px;
+    transition: background-color 0.3s;
+    font-weight: bold;
+}
+
+.btn-friends:hover, .btn-messages:hover {
+    background-color: #e79908;
+}
+.offcanvas {
+    position: fixed;
+    top: 0;
+    left: -100%; /* 初始状态在视窗之外 */
+    width: 300px;
+    height: 100%;
+    background-color: white;
+    overflow-x: hidden;
+    transition: left 0.3s;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+.offcanvas-content {
+    padding: 20px;
+}
+
+.close-btn {
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.friends-list {
+    list-style: none;
+    padding: 0;
+}
+
+.friend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.friend-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.friend-details {
+    flex: 1;
+}
+.post-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+}
+
+#post {
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.avatar {
+    width: 10%;
+    padding: 10px;
+    text-align: center;
+}
+
+.avatar-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.mainbox {
+    padding: 10px;
+    width: auto;
+}
+
+.post-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.post-title:hover {
+    color: #007BFF;
+}
+
+.status {
+    font-size: 14px;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+    margin-left: 15px;
+}
+
+.separator {
+    margin: 0 5px;
+    color: #999;
+}
+
+.reply {
+    width: 11%;
+    padding: 10px;
+    text-align: right;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.reply-count {
+    color: #f09308;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.reply-count:hover {
+    color: #e74f08;
+}
+
+.cate a {
+    color: #007BFF;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.cate a:hover {
+    color: #0056b3;
+}
+.post-header {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #333;
+}
+.tabs-container {
+    width: 100%;
+}
+
+.tabs-header {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-bottom: 0px;
+    margin-top: 20px;
+}
+
+.tab-button {
+    background-color: #f09308;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.tab-button:hover {
+    background-color: #e74f08;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
 }

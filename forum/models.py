@@ -47,6 +47,8 @@ class LoginUser(AbstractUser):
             return False
     def get_like_url(self):
         return reverse_lazy('user_like')
+    def user_post(self):
+        return Post.objects.filter(author=self)
 
 
 class Nav(models.Model):
@@ -75,7 +77,7 @@ class Column(models.Model):  # 板块
         'self', blank=True, null=True, related_name='childcolumn', on_delete=models.PROTECT)
     description = models.TextField()
     img = models.CharField(
-        max_length=200, default='/static/tx/default.jpg', verbose_name=u'图标')
+        max_length=200, default='/default/default.png', verbose_name=u'图标')
     post_number = models.IntegerField(default=0)  # 主题数
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

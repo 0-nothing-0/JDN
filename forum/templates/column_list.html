@@ -1,5 +1,7 @@
 {% extends "./base.html" %}
-
+{% block css %}
+<link rel="stylesheet" type="text/css" href="/static/css/columns.css">
+{%endblock%}
 {% block content %}
 <!-- {% for column in column_list %}
 	板块：<a href="{{ column.get_absolute_url }}">{{ column.name }}</a> ; 管理员:{{ column.manager }}; 帖子:{{column.post_number}}<br>
@@ -36,14 +38,13 @@
 					  <table width="100%">
 						<tbody>
 							<tr id="column">
-								<td width="auto" valign="middle" class="mainbox">
-									<div class="title">
-										<a class="title" href="{{ column.get_absolute_url }}" rel="bookmark" title="">{{ column.name }}</a>
+								<td width="auto" valign="middle" class="mainbox-col">
+									<div class="title-link-col">
+										<a class="title-link-col" href="{{ column.get_absolute_url }}" rel="bookmark" title="">{{ column.name }}</a>
 									</div>
-									<div class="status">
-										<div class="manager">管理员: {{ column.manager }}</div>
-										<span>•</span>
-										<div class="post-number">帖子: {{ column.post_number }}</div>
+									<div class="status-col">
+										<div class="manager-col">管理员: {{ column.manager }}</div>
+										<div class="post-number-col">帖子: {{ column.post_number }}</div>
 									</div>
 								</td>
 							</tr>

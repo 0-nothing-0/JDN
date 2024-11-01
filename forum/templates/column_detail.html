@@ -1,9 +1,8 @@
 {% extends "./base.html" %}
 板块:{{ column_obj.name}}; 管理员:{{ column_obj.manager }}; 帖子:{{column_obj.post_number}}
-
-{% block athor %} 
-板块:{{ column_obj.name}}; 管理员:{{ column_obj.manager }}; 帖子:{{column_obj.post_number}}
-{% endblock %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="/static/css/columns.css">
+{%endblock%}
 {% block content %}
 <div class="wrap">
 
@@ -28,6 +27,21 @@
                         {%csrf_token %}
                         <input type="hidden" name="formhash" value="31213a3e">
                         <input type="hidden" name="listextra" value="">
+                        <table width="100%">
+                              <tbody>
+                                    <tr id="column">
+                                          <td width="auto" valign="middle" class="mainbox">
+                                                <div class="title-link-col">
+                                                      <a class="title-link-col" href="{{ column.get_absolute_url }}" rel="bookmark" title="">{{ column_obj.name }}</a>
+                                                </div>
+                                                <div class="status-col">
+                                                      <div class="manager-col">管理员: {{ column_obj.manager }}</div>
+                                                      <div class="post-number-col">帖子: {{ column_obj.post_number }}</div>
+                                                </div>
+                                          </td>
+                                    </tr>
+                              </tbody>
+                        </table>
                         <!-- {% if column_posts %} -->
                         {% for post in column_posts %}
                         <table width="100%">

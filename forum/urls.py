@@ -3,8 +3,7 @@ from django.urls import re_path
 from django.urls import path
 
 from django.contrib.auth.decorators import login_required
-from forum.views import IndexView, PostCreate, PostUpdate, PostDelete, MessageCreate, MessageDetail, SearchView, \
-    UserPostView
+from forum.views import IndexView, PostCreate, PostUpdate, PostDelete, MessageCreate, MessageDetail, SearchView, UserPostView,UserPageView
 from .views import view_eprints,view_eccvs,view_iclrs,view_sps
 from .views import add_to_favorites
 from .views import remove_from_favorites
@@ -51,7 +50,7 @@ urlpatterns = [
             delete_permission(login_required(PostDelete.as_view())),
             name='post_delete'),
     # url(r'^sendmessage/(?P<sender>\w+)/(?P<receiver>\w+)/$', 'forum.views.sendmessage', name='send_message'),
-    re_path(r'^user/notices/$', views.shownotice, name='show_notice'),
+    re_path(r'^user/notices/$', UserPageView.as_view(), name='show_notice'),
     re_path(r'^user/notices/(?P<pk>\d+)/$',
             views.noticedetail,
             name='notice_detail'),

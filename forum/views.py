@@ -372,6 +372,7 @@ class BaseMixin(object):
                 k = Notice.objects.filter(
                     receiver=self.request.user, status=False).count()
                 context['message_number'] = k
+                context['user_posts'] = Post.objects.filter(author=self.request.user)
 
         except Exception as e:
             logger.error(u'[BaseMixin]加载基本信息出错', e)
@@ -464,10 +465,15 @@ def shownotice(request):
     notice_list = Notice.objects.filter(receiver=request.user, status=False)
     myfriends = LoginUser.objects.get(username=request.user).friends.all()
     User_obj = LoginUser.objects.get(username=request.user)
+    user_posts = Post.objects.filter(author=request.user)
+    like_relations = User_obj.user_relations.all()
+    like_posts = [like_relation.post for like_relation in like_relations] 
     return render(request, 'notice_list.html', {
         'user': User_obj,
         'notice_list': notice_list,
-        'myfriends': myfriends
+        'myfriends': myfriends,
+        'user_posts':user_posts,
+        'like_posts':like_posts
     })
 #「载入模板，填充上下文，再返回由它生成的 HttpResponse 对象」是一个非常常用的操作流程。
 # 于是 Django 提供了一个快捷函数（render），我们用它来重写 index() 视图：
@@ -516,7 +522,6 @@ class UserPostView(ListView):
     def get_queryset(self):
         user_posts = Post.objects.filter(author=self.request.user)
         return user_posts
-
 
 class PostCreate(CreateView):
     """发帖"""
@@ -714,11 +719,47 @@ def upload_image(request):
     else:
         raise Http404()
 
+# class UserPageView(BaseMixin, ListView):
+#     """用户页面视图"""
+#     model = Post
+#     queryset = Post.objects.all()
+#     template_name = 'notice_list.html'
+#     context_object_name = 'post_list'
+#     paginate_by = PAGE_NUM
+
+#     # def get_queryset(self):
+#     #     user_posts = Post.objects.filter(author=self.request.user)
+#     #     return user_posts
+    
+#     def get_context_data(self, **kwargs):
+#         # 获取当前登录的用户信息
+#             user_obj = LoginUser.objects.get(username=self.request.user.username)  # 当前登录用户
+#             kwargs['user'] = user_obj  # 将用户对象传递到模板
+#             # 获取好友列表
+#             kwargs['friends'] = user_obj.friends.all()
+            
+#             # 用户的其他信息
+#             kwargs['levels'] = user_obj.levels
+#             kwargs['avatar'] = user_obj.avatar
+#             kwargs['privilege'] = user_obj.privilege
+#             user_posts = Post.objects.filter(author=self.request.user)
+#             kwargs['user_posts'] = user_posts
+#             like_relations = user_obj.user_relations.all()
+#             kwargs['like_posts'] = [like_relation.post for like_relation in like_relations]        
+        
+#             return super(UserPageView, self).get_context_data(**kwargs)   
 class UserPageView(BaseMixin, ListView):
     """用户页面视图"""
     template_name = 'notice_list.html'
+    #context_object_name = 'user_posts'  # 设置上下文对象的名称
+    paginate_by = PAGE_NUM  # 如果有很多帖子，可以分页
+
+    def get_queryset(self):
+        user_posts = Post.objects.filter(author=self.request.user)
+        return user_posts
 
     def get_context_data(self, **kwargs):
+        # 获取基本上下文数据
         context = super(UserPageView, self).get_context_data(**kwargs)
         
         # 获取当前登录的用户信息
@@ -734,11 +775,15 @@ class UserPageView(BaseMixin, ListView):
             context['avatar'] = user_obj.avatar
             context['privilege'] = user_obj.privilege
             context['like_url'] = user_obj.get_like_url()
-            
+            like_relations = user_obj.user_relations.all()
+            context['like_posts'] = [like_relation.post for like_relation in like_relations]    
         else:
-            context['user'] = None  # 如果未登录，则用户信息为None
+            context['user'] = None  # 如果未登录，则用户信息为 None
+            context['friends'] = []  # 确保 friends 是一个空列表
         
-        return context    
+        return context
+
+
     
 from PIL import Image
 @login_required(login_url=reverse_lazy('user_login'))
