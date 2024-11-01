@@ -33,6 +33,7 @@ from paper.models import Paper as eprint
 from eccv.models import Paper as Eccvs
 from iclr.models import Paper as Iclrs
 from sp.models import Paper as SPs
+import json
 
 
 
@@ -461,7 +462,13 @@ def makefriend(request, sender, receiver):
     application = Application(sender=sender, receiver=receiver, status=0)
     application.save()
     return HttpResponse(
-        "OK申请发送成功！%s-->%s;<a href='/'>返回</a>" % (sender, receiver))
+        """
+        <script type="text/javascript">
+            alert("已向%s成功发送申请！");
+            window.history.back(); 
+        </script>
+        """ % (receiver)
+    )
 
 
 @login_required(login_url=reverse_lazy('user_login'))
@@ -483,20 +490,48 @@ def shownotice(request):
 #「载入模板，填充上下文，再返回由它生成的 HttpResponse 对象」是一个非常常用的操作流程。
 # 于是 Django 提供了一个快捷函数（render），我们用它来重写 index() 视图：
 
+# def noticedetail(request, pk):
+#     """具体通知"""
+#     pk = int(pk)
+#     notice = Notice.objects.get(pk=pk)
+#     notice.status = True
+#     notice.save()
+#     if notice.type == 0:  # 评论通知
+#         post_id = notice.event.post.id
+#         return HttpResponseRedirect(
+#             reverse_lazy('post_detail', kwargs={"post_pk": post_id}))
+#     message_id = notice.event.id  # 消息通知
+#     return HttpResponseRedirect(
+#         reverse_lazy('message_detail', kwargs={"pk": message_id}))
 def noticedetail(request, pk):
     """具体通知"""
     pk = int(pk)
     notice = Notice.objects.get(pk=pk)
     notice.status = True
     notice.save()
+
     if notice.type == 0:  # 评论通知
         post_id = notice.event.post.id
         return HttpResponseRedirect(
-            reverse_lazy('post_detail', kwargs={"post_pk": post_id}))
-    message_id = notice.event.id  # 消息通知
-    return HttpResponseRedirect(
-        reverse_lazy('message_detail', kwargs={"pk": message_id}))
+            reverse_lazy('post_detail', kwargs={"post_pk": post_id})
+        )
+    elif notice.type == 1:  # 消息通知
+        message = notice.event  # 假设 event 是 Message 实例
+        data = {
+            'sender': message.sender.username,
+            'content': message.content,
+            "sender_id": message.sender.id,  # 确保 sender_id 包含在数据中
+            'created_at': message.created_at.strftime('%Y-%m-%d %H:%M:%S')
+        }
+        return JsonResponse(data)  # 返回消息数据，前端处理显示模态窗口
 
+    return HttpResponseRedirect('/')  # 默认跳转到首页
+
+class MessageDetail(DetailView):
+    """具体消息"""
+    model = Message
+    template_name = 'message.html'
+    context_object_name = 'message'
 
 def friendagree(request, pk, flag):
     """好友同意/拒绝（flag 1同意，2拒绝）"""
@@ -642,12 +677,6 @@ class MessageCreate(CreateView):
         # Return a JSON response to indicate success
         return JsonResponse({'success': True, 'message': '消息发送成功！'})
 
-
-class MessageDetail(DetailView):
-    """具体消息"""
-    model = Message
-    template_name = 'message.html'
-    context_object_name = 'message'
 
 
 def columnall(request):
@@ -806,6 +835,13 @@ class UserPageView(BaseMixin, ListView):
             # 获取用户的未读通知列表
             notice_list = Notice.objects.filter(receiver=user_obj, status=False)
             context['notice_list'] = notice_list
+            notice_list_all = Notice.objects.filter(receiver=user_obj)
+            context['notice_list_all'] = notice_list_all
+            notice_list_send = Notice.objects.filter(sender=user_obj)
+            context['notice_list_send'] = notice_list_send
+            context['unread_msg_count']=notice_list.filter(type=1).count()
+            context['reply_msg_count']=notice_list.filter(type=0).count()
+            context['friend_msg_count']=notice_list.filter(type=2).count()
         else:
             context['user'] = None  # 如果未登录，则用户信息为 None
             context['friends'] = []  # 确保 friends 是一个空列表
@@ -861,3 +897,40 @@ def update_avatar(request):
             return redirect('show_notice')  # 可替换为返回错误消息的页面或提示
 
     return redirect('show_notice')
+@login_required(login_url=reverse_lazy('user_login'))
+def mark_all_as_read(request):
+    if request.method == 'POST':
+        # 解析请求体中的 JSON 数据
+        data = json.loads(request.body)
+        type_param = data.get('type')
+
+        if type_param is not None:
+            # 将当前用户所有指定类型的未读消息标记为已读
+            Notice.objects.filter(receiver=request.user, type=type_param, status=False).update(status=True)
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False, 'error': 'Invalid type parameter'}, status=400)
+
+    return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
+
+@login_required(login_url=reverse_lazy('user_login'))
+def mark_as_read(request, notice_id):
+    try:
+        notice = Notice.objects.get(pk=notice_id, receiver=request.user)
+        notice.status = True
+        notice.save()
+        return JsonResponse({'success': True})
+    except Notice.DoesNotExist:
+        return JsonResponse({'error': 'Notice not found'}, status=404)
+@login_required(login_url=reverse_lazy('user_login'))    
+def remove_friend(request, friend_id):
+    """删除好友"""
+    user = request.user
+    friend = get_object_or_404(LoginUser, id=friend_id)
+    
+    if user.remove_friend(friend):
+        # 可以添加一条成功的消息
+        return redirect('show_notice')  # 重定向到通知页面或其他页面
+    else:
+        # 可以添加一条错误的消息
+        return redirect('show_notice')

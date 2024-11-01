@@ -65,18 +65,18 @@ function openOffcanvas() {
 function closeOffcanvas() {
     document.getElementById("offcanvas-friends").style.left = "-100%";
 }
-function showTab(tabId) {
-    // 隐藏所有的 tab-content
-    const contents = document.querySelectorAll('.tab-content');
+function showTab(tabId, sectionClass) {
+    // 隐藏所有的 tab-content 属于该部分的内容
+    const contents = document.querySelectorAll(`.${sectionClass} .tab-content`);
     contents.forEach(content => content.style.display = 'none');
-
     // 显示选中的 tab-content
     document.getElementById(tabId).style.display = 'block';
 }
+
 function openMessageSidebar() {
     const sidebar = document.getElementById("messageSidebar");
     sidebar.style.display = "block"; /* Make the sidebar visible */
-    sidebar.style.width = "300px"; /* Adjust the width as needed */
+    sidebar.style.width = "400px"; /* Adjust the width as needed */
 }
 
 function closeMessageSidebar() {
@@ -86,7 +86,127 @@ function closeMessageSidebar() {
         sidebar.style.display = "none"; /* Hide the sidebar after collapsing */
     }, 500); /* Match the duration of the transition */
 }
+    // 切换标签内容
+function showmsgTab(tabId) {
+            // 隐藏所有的 tab-content
+    const contents = document.querySelectorAll('.tab-content');
+    contents.forEach(content => content.style.display = 'none');
 
+    // 显示选中的 tab-content
+    document.getElementById(tabId).style.display = 'block';
+}
+
+    // 处理好友请求
+    function handleFriendRequest(noticeId, action) {
+        // 用户确认操作后，发送请求到服务器
+        const popupMessage = action === 1 ? '已添加好友' : '已拒绝请求';
+
+        // 发送请求到服务器（示例 AJAX 请求）
+        fetch(`/user/friend/${noticeId}/${action}/`, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                alert(popupMessage); // 显示提示消息
+                location.reload(); // 刷新页面
+            } else {
+                alert('操作失败，请重试。');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+    function toggleTab(tabId, sectionClass) {
+        const contents = document.querySelectorAll(`.${sectionClass} .tab-content`);
+        contents.forEach(content => content.style.display = 'none');
+        const selectedTab = document.getElementById(tabId);
+        selectedTab.style.display = (selectedTab.style.display === 'block') ? 'none' : 'block';
+    }
+function toggleContent(contentId) {
+    const content = document.getElementById(contentId);
+
+    // 检查内容是否已经显示
+    if (content.style.display === "none" || content.style.display === "") {
+        content.style.display = "block"; // 显示内容
+    } else {
+        content.style.display = "none"; // 隐藏内容
+    }
+}
+function markAllAsRead(type) {
+        // 使用 Fetch API 发送一个请求，将指定 type 的消息标记为已读
+        fetch("{% url 'mark_all_as_read' %}", {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ type: type })
+        })
+        .then(response => {
+            if (response.ok) {
+                // 刷新私信内容
+                location.reload();
+            } else {
+                alert('操作失败，请重试。');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('操作失败，请重试。');
+        });
+    }
+// 函数用于获取消息详情并打开模态窗口
+function showMessageDetail(noticeId) {
+    closeMessageSidebar();
+    closeOffcanvas();
+    fetch(`/user/notices/${noticeId}/`)
+        .then(response => response.json())
+        .then(data => {
+            // 填充模态窗口内容
+            document.getElementById('messageSender').innerText = `发送者: ${data.sender}`;
+            document.getElementById('messageContent').innerHTML = data.content;
+            document.getElementById('messageDate').innerText = `发送时间: ${data.created_at}`;
+
+            // 设置“回复消息”链接的 href
+            document.getElementById('replyMessageLink').href = `/user/message/sendto/${data.sender_id}/`;
+
+            // 显示模态窗口
+            document.getElementById('messageModal').style.display = 'block';
+
+            // 发送请求将该条消息设为已读
+            fetch(`/user/notices/${noticeId}/mark-as-read/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCSRFToken(), // 确保传递 CSRF 令牌
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => {
+                if (!response.ok) {
+                    console.error('Failed to mark message as read');
+                }
+            }).catch(error => console.error('Error:', error));
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+    // 函数用于关闭模态窗口
+function closemsgModal() {
+        document.getElementById('messageModal').style.display = 'none';
+        location.reload();
+    }
+function handleNoticeClick(event, noticeId, noticeType) {
+    // 检查通知类型
+    if (noticeType === 1) {
+        // 如果是消息通知，阻止默认的链接跳转
+        event.preventDefault();
+        
+        // 调用函数显示消息详情模态窗口
+        showMessageDetail(noticeId);
+    }
+    // 如果是其他类型（如评论通知），不阻止默认行为，正常跳转
+}
 
 </script>
 
@@ -190,44 +310,169 @@ function closeMessageSidebar() {
                         <p class="friend-email">{{ friend.email }}</p>
                         <p class="friend-levels">积分: {{ friend.levels }}</p>
                         <p class="sd-msg"><a href="{% url 'send_message' friend.id %}">发送消息</a></p> 
+                        <a href="#" class="remove-friend-btn" onclick="confirmRemoveFriend('{{ friend.id }}')">删除好友</a>
+
+<script>
+    function confirmRemoveFriend(friendId) {
+        if (confirm("确定要删除该好友吗？")) {
+            window.location.href = `/user/remove_friend/${friendId}/`;
+        }
+    }
+</script>
                     </div>
                 </li>
             {% endfor %}
         </ul>
     </div>
 </div>
-<!-- 右侧边栏 -->
 <div id="messageSidebar" class="sidebar">
     <div class="sidebar-header">
         <span class="close-btn" onclick="closeMessageSidebar()">&times;</span>
         <h2>消息列表</h2>
     </div>
-    <div class="sidebar-content">
-        {% for notice in notice_list %}
-            {% if notice.type == 2 %}
-                <div class="notice-item">
-                    <p class="notice-text">{{ notice }}</p>
-                    <div class="notice-actions">
-                        <a class="notice-link agree" href="{% url 'friend_agree' notice.pk 1 %}">同意</a> |
-                        <a class="notice-link decline" href="{% url 'friend_agree' notice.pk 2 %}">拒绝</a>
+
+    <!-- 未读消息块 -->
+    <div class="unread-messages">
+        <p class="msg-type" onclick="toggleContent('unread-content')">未读消息</p>
+        <div id="unread-content" class="content" style="display: none;">
+            <div class="message-sec"> 
+                <div class="message-tabs">
+                    <button onclick="showTab('private-messages', 'message-sec')">私信{% if unread_msg_count != 0 %}({{unread_msg_count}}){% endif %}</button>
+                    <button onclick="showTab('replies', 'message-sec')">回复我的{% if reply_msg_count != 0 %}({{reply_msg_count}}){% endif %}</button>
+                    <button onclick="showTab('friend-requests', 'message-sec')">好友请求{% if friend_msg_count != 0 %}({{friend_msg_count}}){% endif %}</button>
+                </div>
+    
+                <div class="sidebar-content">
+                    <!-- 私信内容 -->
+                    <div id="private-messages" class="tab-content">
+                            {% for notice in notice_list %}
+                                {% if notice.type == 1%}
+                                    <div class="notice-item">
+                                        <a class="notice-link" href="{% url 'notice_detail' notice.pk %}" onclick="handleNoticeClick(event, {{ notice.pk }}, {{ notice.type }})">{{ notice }}</a>
+                                    </div>
+                                    <hr>
+                                    {% endif %}
+                            {% endfor %}
+                            {% if unread_msg_count == 0 %}
+                                <p class="no-notices">暂无私信。</p>
+                            {%else%}
+                            <button class="mark-all-read-btn" onclick="markAllAsRead(1)">一键已读</button>
+                            {% endif %}
                     </div>
+    
+                    <!-- 回复我的内容 -->
+                    <div id="replies" class="tab-content" style="display: none;">
+                            {% for notice in notice_list %}
+                                {% if notice.type == 0%}
+                                    <div class="notice-item">
+                                        <a class="notice-link" href="{% url 'notice_detail' notice.pk %}" onclick="handleNoticeClick(event, {{ notice.pk }}, {{ notice.type }})">{{ notice }}</a>
+                                    </div>
+                                    <hr>
+                                {%endif%}
+                            {% endfor %}
+    
+                            {% if  reply_msg_count == 0  %}
+                                <p class="no-notices">暂时没有收到任何回复。</p>
+                                {%else%}
+                                <button class="mark-all-read-btn" onclick="markAllAsRead(0)">一键已读</button>
+                                {% endif %}
+                    </div>
+    
+                    <!-- 好友请求内容 -->
+                    <div id="friend-requests" class="tab-content" style="display: none;">
+                            {% for notice in notice_list %}
+                                {% if notice.type == 2%}
+                                    <div class="notice-item">
+                                        <p class="notice-text">{{ notice }}</p>
+                                        <div class="notice-actions">
+                                            <a class="notice-link agree" href="#" onclick="handleFriendRequest({{ notice.pk }}, 1)">同意</a> |
+                                            <a class="notice-link decline" href="#" onclick="handleFriendRequest({{ notice.pk }}, 2)">拒绝</a>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                {%endif%}
+                            {% endfor %}
+    
+                            {% if friend_msg_count == 0 %}
+                                <p class="no-notices">暂无好友请求。</p>
+                            {% endif %}
+                    </div>
+
                 </div>
-            {% else %}
+            </div>
+        </div>
+    
+        </div>
+       
+        <p class="msg-type" onclick="toggleContent('all-content')">全部消息</p>
+        <div id="all-content" class="content" style="display: none;">
+            <!-- 全部消息块 -->
+    <div class="all-messages">
+        <div class="sidebar-content">
+            {% for notice in notice_list_all %}
+                {%if notice.type == 2%}
+                <p class="notice-link" style=" text-decoration-line: none; color: black">{{ notice }}</p>
+                {%else%}
                 <div class="notice-item">
-                    <a class="notice-link" href="{% url 'notice_detail' notice.pk %}">{{ notice }}</a>
+                    <a class="notice-link" href="{% url 'notice_detail' notice.pk %}" onclick="handleNoticeClick(event, {{ notice.pk }}, {{ notice.type }})">{{ notice }}</a>
                 </div>
-            {% endif %}
+                <hr>
+                {%endif%}
+            {% empty %}
+                <p class="no-notices">暂无消息。</p>
+            {% endfor %}
+        </div>
+    </div>
+        </div>
+        <p class="msg-type" onclick="toggleContent('sent-content')">已发消息</p>
+        <div id="sent-content" class="content" style="display: none;">
+             <!-- 已发消息块 -->
+    <div class="sent-messages">
+        <div class="sidebar-content">
+            {% for notice in notice_list_send %}
+            {%if notice.type == 2%}
+            <div class="notice-item">
+                <p class="notice-link" style=" text-decoration-line: none; color: black">{{ notice }}</p>
+            </div>
             <hr>
-        {% empty %}
-            <p class="no-notices">您没有收到任何通知。</p>
-        {% endfor %}
+            {%else%}
+                <div class="notice-item">
+                    <a class="notice-link" href="{% url 'notice_detail' notice.pk %}" onclick="handleNoticeClick(event, {{ notice.pk }}, {{ notice.type }})">{{ notice }}</a>
+                </div>
+                <hr>
+            {%endif%}
+            {% empty %}
+                <p class="no-notices">暂无已发消息。</p>
+            {% endfor %}
+        </div>
     </div>
 </div>
+        </div>   
+
+        <div id="messageModal" class="modal" style="display: none;">
+            <div class="modal-content" style="width: 70%; height: 70%;">
+                <div class="modal-header">
+                    <span class="close" onclick="closemsgModal()">&times;</span>
+                    <h2>消息详情</h2>
+                </div>
+                <div class="modal-body">
+                    <p id="messageSender" style="margin: 10px;"></p>
+                        <div id="messageContent" class="message-content">
+                            {% autoescape off %}
+                                {{ message.content|linebreaks }}
+                            {% endautoescape %}
+                        </div>
+                    <p id="messageDate" style="margin: 10px; margin-top: 30px;"></p>
+                    <a id="replyMessageLink" href="#" class="send-message-link">回复消息</a>
+                </div>
+            </div>
         </div>
-        <div class="tabs-container">
+        </div>
+        <div class="post-sec">
+          <div class="tabs-container">
             <div class="tabs-header">
-                <h2 class="post-header" onclick="showTab('posts')" style="cursor: pointer;">我的发帖</h2>
-                <h2 class="post-header" onclick="showTab('likes')" style="cursor: pointer;">我的收藏</h2>
+                <h2 class="post-header" onclick="showTab('posts','post-sec')" style="cursor: pointer;">我的发帖</h2>
+                <h2 class="post-header" onclick="showTab('likes','post-sec')" style="cursor: pointer;">我的收藏</h2>
             </div>
         
             <div id="posts" class="tab-content">
@@ -259,6 +504,9 @@ function closeMessageSidebar() {
                                         <span class="separator">•</span>
                                         <div class="lastreply">
                                             {{ post.last_response }} 最后回复
+                                        </div>
+                                        <div class="edit-link">
+                                            <a href="{% url 'post_update' post.id %}">修改</a>
                                         </div>
                                     </div>
                                 </td>
@@ -319,7 +567,9 @@ function closeMessageSidebar() {
                 {% endif %}
                 {% endblock %}
             </div>
+        </div>  
         </div>
+        
 </div>
 
 {%endif%}

@@ -41,9 +41,24 @@
     <!-- 帖子详情部分 -->
     <div class="post clearfix"> 
         <div class="avatar_comment clearfix" style="margin-bottom: 5%; background-color: white;">
-            <img src="{{ post.author.avatar.url }}" style="display: block; margin-left: auto; margin-right: auto;"><br>
-            <div style="font-size: 150%; color:black; text-align: center;">{{ post.author.username }}</div>
-            <div style="color:gray; text-align: center;">积分：{{ post.author.levels }}</div>
+            {% if post.author.avatar %}
+                <img class="head" src="{{ post.author.avatar.url }}" style="display: block; margin-left: auto; margin-right: auto; width:200px; height:200px;"><br>
+            {% else %}
+                <img class="head" src="http://vmaig.qiniudn.com/image/tx/tx-default.jpg" style="display: block; margin-left: auto; margin-right: auto;width:200px; height:200px;"><br>
+            {% endif %}
+                <div style="font-size: 150%; color:black; text-align: center;">{{ post.author.username }}</div>
+                <div style="color:gray; text-align: center;">积分：{{ post.author.levels }}</div>
+            <div style="font-style: italic;text-align: center;">
+            {% if user.username %}
+                {% ifnotequal post.author.username user.username %}
+                    {% if not post.author|checkfriend:user %}
+                        <a href="{% url 'make_friend' user.username post.author.username %}">加好友</a>
+                    {% else %}
+                        <a href="{% url 'send_message' post.author.id %}">发消息</a>
+                    {% endif %}
+                {% endifnotequal %}
+            {% endif %}
+            </div>
         </div>
         <div class="content clearfix" style="margin-left: 2%; width: 80%; border: 1px black solid; margin-bottom: 5%; min-height: 20em; padding-left: 1%; padding-right: 1%; border-radius: 1em;">
             <span style="color: black; font-size: 2em;">{{ post.title }}</span>
@@ -53,7 +68,7 @@
                 {% endautoescape %}
             </div>
         </div>
-        <div style="font-size: 200%; color:black; text-align: center;">
+        <div style="font-size: 125%; color:grey; text-align: center;width: 7em; float: right;">
         {% if is_favorited %}
         <td width="11%" align="right" valign="middle" class="reply">
             <a class="title" href="{{ post.delete_like_url }}" rel="bookmark" title="">取消收藏帖子</a>
@@ -95,6 +110,7 @@
                     {% endif %}
                     <div style="font-size: 100%; color:black;">{{ comment.author.username }}</div>
                     <div style="font-size: 75%; color:gray;">积分：{{ comment.author.levels }}</div>
+                    <div style="font-style: italic;text-align: center;">
                     {% if user.username %}
                         {% ifnotequal comment.author.username user.username %}
                             {% if not comment.author|checkfriend:user %}
@@ -104,6 +120,7 @@
                             {% endif %}
                         {% endifnotequal %}
                     {% endif %}
+                    </div>
                 </div>
                 <div class="content_comment">
                     <p>{% if comment.comment_parent %}回复 {{ comment.comment_parent.author }} 发表于 {{ comment.comment_parent.created_at|date:"Y-m-d H:i:s" }} 的内容《{{ comment.comment_parent.content }}》; {% endif %}{{ comment.created_at|date:"Y-m-d H:i:s" }}</p>

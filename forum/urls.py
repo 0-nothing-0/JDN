@@ -43,6 +43,7 @@ urlpatterns = [
     re_path(r'^user/post_create/$',
             login_required(PostCreate.as_view()),
             name='post_create'),
+    re_path(r'^user/post_create_return/$', views.create_return, name='create_return'),
     re_path(r'^user/post_update/(?P<pk>\d+)/$',
             login_required(PostUpdate.as_view()),
             name='post_update'),
@@ -72,6 +73,9 @@ urlpatterns = [
     re_path(r'^eccv/$', view_eccvs, name='eccvs_list'),
     re_path(r'^iclr/$', view_iclrs, name='iclrs_list'),
     re_path(r'^sp/$', view_sps, name='sps_list'),
+    re_path(r'^mark-all-as-read/', views.mark_all_as_read, name='mark_all_as_read'),
+    re_path(r'^user/notices/(?P<noticeId>\d+)/mark-as-read/$', views.mark_as_read, name='mark_as_read'),
+        path('user/remove_friend/<int:friend_id>/', views.remove_friend, name='remove_friend'),
     re_path(r'^update_avatar/', views.update_avatar, name='update_avatar')
 ]
 from django.conf import settings

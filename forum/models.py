@@ -49,6 +49,12 @@ class LoginUser(AbstractUser):
         return reverse_lazy('user_like')
     def user_post(self):
         return Post.objects.filter(author=self)
+    def remove_friend(self, friend):
+        """移除好友"""
+        if friend in self.friends.all():
+            self.friends.remove(friend)
+            return True
+        return False
 
 
 class Nav(models.Model):
@@ -170,8 +176,7 @@ class Comment(models.Model):  # 评论
         return self.content
 
     def description(self):
-        return u'%s 回复了您的帖子(%s) R:《%s》' % (self.author, self.post,
-                                           self.content)
+        return u'%s 回复了您的帖子(%s):%s' % (self.author, self.post, self.content)
 
     def get_absolute_url(self):
         return reverse_lazy('post_detail', kwargs={"post_pk": self.post.pk})
@@ -190,7 +195,7 @@ class Message(models.Model):  # 好友消息
     updated_at = models.DateTimeField(auto_now=True)
 
     def description(self):
-        return u'%s 给你发送了消息《%s》' % (self.sender, self.content)
+        return u'%s 发送消息：%s' % (self.sender, self.content)
 
     class Meta:
         db_table = 'message'
@@ -207,7 +212,7 @@ class Application(models.Model):  # 好友申请
     updated_at = models.DateTimeField(auto_now=True)
 
     def description(self):
-        return u'%s 申请加好友' % self.sender
+        return u'%s 申请添加 %s 为好友' % (self.sender,self.receiver)
 
     class Meta:
         db_table = 'application'
@@ -234,7 +239,10 @@ class Notice(models.Model):
         verbose_name_plural = u'通知'
 
     def __str__(self):
-        return u"%s的事件: %s" % (self.sender, self.description())
+        description = self.description()
+        if len(description) > 40:
+            return description[:40] + '...'  # 截断并添加省略号
+        return description
 
     def description(self):
         if self.event:

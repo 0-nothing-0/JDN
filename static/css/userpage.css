@@ -2,18 +2,20 @@
     position: relative;
     width: fit-content;
     height: fit-content;
-    left: 10px; 
-    top: 10px;  
+    left: 10px;
+    top: 10px;
     cursor: pointer;
 }
 
 #user-avatar {
     display: block;
-    width: 200px; /* 设置合适的图片大小 */
+    width: 200px;
+    /* 设置合适的图片大小 */
     height: 200px;
     border-radius: 90%;
     padding: 0%;
-    margin-bottom: 30px; /* 添加 10px 的底部间隙 */
+    margin-bottom: 30px;
+    /* 添加 10px 的底部间隙 */
 }
 
 .hover-text {
@@ -64,15 +66,18 @@
     font-size: 24px;
     cursor: pointer;
 }
+
 /* 为按钮容器设置样式，使按钮左右对齐 */
 .button-container {
     display: flex;
-    justify-content: space-between; /* 左右分布 */
+    justify-content: space-between;
+    /* 左右分布 */
     margin-top: 10px;
 }
 
 .btn-cancel {
-    background-color: #f44336; /* 红色背景 */
+    background-color: #f44336;
+    /* 红色背景 */
     color: white;
     border: none;
     padding: 8px 16px;
@@ -81,7 +86,8 @@
 }
 
 .btn-submit {
-    background-color: #4CAF50; /* 绿色背景 */
+    background-color: #4CAF50;
+    /* 绿色背景 */
     color: white;
     border: none;
     padding: 8px 16px;
@@ -90,61 +96,88 @@
 }
 
 .btn-cancel:hover {
-    background-color: #d32f2f; /* 深红色背景 */
+    background-color: #d32f2f;
+    /* 深红色背景 */
 }
 
 .btn-submit:hover {
-    background-color: #388e3c; /* 深绿色背景 */
+    background-color: #388e3c;
+    /* 深绿色背景 */
 }
+
 .user-info-container {
-    display: flex; /* 使用 flexbox 布局 */
-    align-items: flex-start; /* 将内容靠近顶部对齐 */
-    gap: 50px; /* 设置头像和用户信息之间的间距，可以根据需要调整 */
+    display: flex;
+    /* 使用 flexbox 布局 */
+    align-items: flex-start;
+    /* 将内容靠近顶部对齐 */
+    gap: 50px;
+    /* 设置头像和用户信息之间的间距，可以根据需要调整 */
 }
 
 .user-details {
     display: flex;
-    flex-direction: column; /* 使用户名和邮箱垂直排列 */
+    flex-direction: column;
+    /* 使用户名和邮箱垂直排列 */
 }
 
 .username {
-    font-size: 3em; /* 增大用户名的字体 */
-    font-weight: bold; /* 用户名字体加粗 */
-    margin: 0; /* 去除默认外边距 */
+    font-size: 3em;
+    /* 增大用户名的字体 */
+    font-weight: bold;
+    /* 用户名字体加粗 */
+    margin: 0;
+    /* 去除默认外边距 */
 }
 
 .user-email {
-    font-size: 2em; /* 增大邮箱的字体 */
-    color: #666; /* 使用较浅的颜色 */
-    margin: 0; /* 去除默认外边距 */
+    font-size: 2em;
+    /* 增大邮箱的字体 */
+    color: #666;
+    /* 使用较浅的颜色 */
+    margin: 0;
+    /* 去除默认外边距 */
 }
+
 .write-post {
-    font-size: 2em; /* 增大邮箱的字体 */
+    font-size: 2em;
+    /* 增大邮箱的字体 */
     font-weight: bolder;
-    color: #666; /* 使用较浅的颜色 */
-    margin: 0; /* 去除默认外边距 */
+    color: #666;
+    /* 使用较浅的颜色 */
+    margin: 0;
+    /* 去除默认外边距 */
     margin-bottom: 30px;
 }
+
 .write-post:hover {
-    color: #1b67d1; /* 使用较浅的颜色 */
+    color: #1b67d1;
+    /* 使用较浅的颜色 */
 }
+
 .user-levels {
-    font-size: 1.5em; /* 调整积分字体大小 */
-    color: #ea920f; /* 使用较浅的颜色 */
-    margin: 0; /* 去除默认外边距 */
+    font-size: 1.5em;
+    /* 调整积分字体大小 */
+    color: #ea920f;
+    /* 使用较浅的颜色 */
+    margin: 0;
+    /* 去除默认外边距 */
     margin-top: 10px;
 }
 
 .button-group-up {
     display: flex;
-    flex-direction: row; /* 竖直排列 */
-    gap: 10px; /* 按钮之间的间距 */
-    position: relative; /* 绝对定位 */
+    flex-direction: row;
+    /* 竖直排列 */
+    gap: 10px;
+    /* 按钮之间的间距 */
+    position: relative;
+    /* 绝对定位 */
     right: -160%;
     margin-top: 50px;
 }
 
-.btn-friends, .btn-messages {
+.btn-friends,
+.btn-messages {
     background-color: #f05d08;
     color: white;
     border: none;
@@ -156,14 +189,17 @@
     font-weight: bold;
 }
 
-.btn-friends:hover, .btn-messages:hover {
+.btn-friends:hover,
+.btn-messages:hover {
     background-color: #e79908;
 }
+
 .offcanvas {
     position: fixed;
     top: 0;
-    left: -100%; /* 初始状态在视窗之外 */
-    width: 300px;
+    left: -100%;
+    /* 初始状态在视窗之外 */
+    width: 400px;
     height: 100%;
     background-color: white;
     overflow-x: hidden;
@@ -175,21 +211,29 @@
 .offcanvas-content {
     padding: 20px;
 }
+
 .offcanvas-header {
     display: flex;
-    justify-content: space-between; /* Space between the title and the close button */
-    align-items: center; /* Align items vertically in the center */
-    margin-bottom: 20px; /* Add some space below the header */
+    justify-content: space-between;
+    /* Space between the title and the close button */
+    align-items: center;
+    /* Align items vertically in the center */
+    margin-bottom: 20px;
+    /* Add some space below the header */
 }
 
 .offcanvas-title {
-    margin: 0; /* Remove default margin from the title */
-    font-size: 24px; /* Adjust font size as needed */
+    margin: 0;
+    /* Remove default margin from the title */
+    font-size: 24px;
+    /* Adjust font size as needed */
 }
 
 .close-btn {
-    font-size: 24px; /* Adjust the size of the close button */
-    cursor: pointer; /* Change cursor to pointer when hovering */
+    font-size: 24px;
+    /* Adjust the size of the close button */
+    cursor: pointer;
+    /* Change cursor to pointer when hovering */
 }
 
 .friends-list {
@@ -213,6 +257,7 @@
 .friend-details {
     flex: 1;
 }
+
 .post-table {
     width: 100%;
     border-collapse: separate;
@@ -298,12 +343,14 @@
 .cate a:hover {
     color: #0056b3;
 }
+
 .post-header {
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 15px;
     color: #333;
 }
+
 .tabs-container {
     width: 100%;
 }
@@ -338,10 +385,11 @@
 .tab-content.active {
     display: block;
 }
+
 /* 右侧边栏样式 */
 .sidebar {
     height: 100%;
-    width: 350px;;
+    width: 500px;
     position: fixed;
     top: 0;
     right: 0;
@@ -365,10 +413,6 @@
     cursor: pointer;
 }
 
-.sidebar-content {
-    padding: 20px;
-}
-
 .message-item {
     margin-bottom: 15px;
 }
@@ -377,6 +421,7 @@
     font-size: 12px;
     color: #888;
 }
+
 .sidebar-content {
     background-color: #f9f9f9;
     padding: 15px;
@@ -384,6 +429,7 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     max-height: 400px;
     overflow-y: auto;
+    width: auto;
 }
 
 .notice-item {
@@ -429,6 +475,7 @@ hr {
     border-top: 1px solid #ddd;
     margin: 10px 0;
 }
+
 .send-message-btn {
     display: inline-block;
     margin-top: 10px;
@@ -444,3 +491,128 @@ hr {
 .send-message-btn:hover {
     background-color: #0056b3;
 }
+
+.edit-link {
+    margin-left: 10px;
+}
+
+.edit-link a {
+    color: #007BFF;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.edit-link a:hover {
+    text-decoration: underline;
+}
+
+.message-tabs {
+    display: flex;
+    justify-content: space-between; /* 控制按钮之间的间距 */
+    gap: 5px; /* 添加按钮之间的间隙 */
+}
+/* 样式调整 */
+.message-tabs button {
+    margin: 5px;
+    margin-left: 5px ;
+    padding: 8px 12px;
+    border: none;
+    background-color: #007BFF;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 80px;
+    height: 30px;
+    flex:1;
+    
+}
+
+.message-tabs button:hover {
+    background-color: #0056b3;
+}
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #f9f9f9;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+.popup-content {
+    text-align: center;
+}
+
+.popup-content button {
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.popup-content button:hover {
+    background-color: #0056b3;
+}
+.msg-type {
+    font-size: 18px; /* 设置字体大小 */
+    font-weight: bold; /* 加粗文字 */
+    color: #161c23; 
+    padding: 10px 15px; /* 添加内边距 */
+    border-radius: 5px; /* 圆角边框 */
+    margin: 5px; /* 添加底部外边距，增加与其他元素的间距 */
+    display: inline-block; /* 使元素宽度适应内容 */
+}
+.mark-all-read-btn {
+    display: block;
+    margin: 5px auto;
+    padding: 5px 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.mark-all-read-btn:hover {
+    background-color: #0056b3;
+}
+    /* 使用 pre 标签格式化内容为源码显示 */
+    pre {
+        background-color: #f4f4f4;
+        padding: 10px;
+        border-radius: 3px;
+        overflow-x: auto;
+        white-space: pre-wrap; /* 保持换行符 */
+        font-family: monospace; /* 设置等宽字体 */
+    }
+    .message-content {
+        margin-left: 2%;
+        margin-right: 2%;
+        width: auto;
+        border: none;
+        color: black;
+        font-size: 1.5em;
+        overflow-y: auto; /* 启用垂直滚动 */
+        max-height: 30em; /* 限制最大高度 */
+    }
+    .remove-friend-btn {
+        color: red;
+        text-decoration: none;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    
+    .remove-friend-btn:hover {
+        text-decoration: underline;
+    }
+    
