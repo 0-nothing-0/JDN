@@ -398,6 +398,9 @@
     transition: 0.5s;
     z-index: 1000;
     display: none;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
 }
 
 .sidebar-header {
@@ -406,6 +409,7 @@
     align-items: center;
     padding: 5px 10px;
     margin: 0;
+    width: 90%;
 }
 
 .close-btn {
@@ -510,6 +514,7 @@ hr {
     display: flex;
     justify-content: space-between; /* 控制按钮之间的间距 */
     gap: 5px; /* 添加按钮之间的间隙 */
+    margin-bottom: 10px;
 }
 /* 样式调整 */
 .message-tabs button {

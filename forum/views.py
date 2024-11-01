@@ -589,7 +589,19 @@ class PostCreate(CreateView):
         p.save()
         user.levels += 5  # 发帖一次积分加 5
         user.save()
-        return HttpResponseRedirect('/user/post_create_return/')
+        # return HttpResponseRedirect('/user/post_create_return/')
+         # 获取帖子详情页面的 URL
+        post_detail_url = reverse('post_detail', kwargs={'post_pk': p.pk})
+
+        # 返回包含 JavaScript 的 HttpResponse
+        return HttpResponse(
+            f"""
+            <script type="text/javascript">
+                alert("发帖成功！");
+                window.location.href = "{post_detail_url}";
+            </script>
+            """
+        )
 
 def create_return(request):
     return render(request, 'create_return.html')
@@ -673,9 +685,14 @@ class MessageCreate(CreateView):
         formdata['receiver'] = receiver
         m = Message(**formdata)
         m.save()
-
-        # Return a JSON response to indicate success
-        return JsonResponse({'success': True, 'message': '消息发送成功！'})
+        return HttpResponse(
+            """
+            <script type="text/javascript">
+                alert("消息发送成功！");
+                window.history.go(-2);  // 返回上一个页面
+            </script>
+            """
+        )
 
 
 

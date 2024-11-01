@@ -38,7 +38,7 @@ urlpatterns = [
             views.makefriend,
             name='make_friend'),
     re_path(r'^makecomment/$', views.makecomment, name='make_comment'),
-    re_path(r'^user/postlist/$', UserPostView.as_view(), name='user_post'),
+    re_path(r'^user/postlist/$', UserPageView.as_view(), name='user_post'),
     re_path(r'^user/postlike/$',views.likedetail, name='user_like'),
     re_path(r'^user/post_create/$',
             login_required(PostCreate.as_view()),

@@ -86,6 +86,28 @@ function closeMessageSidebar() {
         sidebar.style.display = "none"; /* Hide the sidebar after collapsing */
     }, 500); /* Match the duration of the transition */
 }
+function toggleOffcanvas() {
+    const offcanvas = document.getElementById("offcanvas-friends");
+    if (offcanvas.style.left === "0px") {
+        offcanvas.style.left = "-100%"; // 关闭侧边栏
+    } else {
+        offcanvas.style.left = "0"; // 打开侧边栏
+    }
+}
+
+function toggleMessageSidebar() {
+    const sidebar = document.getElementById("messageSidebar");
+    if (sidebar.style.display === "block") {
+        sidebar.style.width = "0"; // 收起侧边栏
+        setTimeout(() => {
+            sidebar.style.display = "none"; // 隐藏侧边栏
+        }, 500); // 与过渡时间匹配
+    } else {
+        sidebar.style.display = "block"; // 显示侧边栏
+        sidebar.style.width = "400px"; // 调整宽度
+    }
+}
+
     // 切换标签内容
 function showmsgTab(tabId) {
             // 隐藏所有的 tab-content
@@ -285,8 +307,8 @@ function handleNoticeClick(event, noticeId, noticeType) {
                     <p class="user-email">{{ user.email }}</p>
                     <p class="user-levels">积分: {{ user.levels }}</p>
                     <div class="button-group-up">
-                        <button class="btn-friends" onclick="openOffcanvas()">好友列表</button>
-                        <button class="btn-messages" onclick="openMessageSidebar()">消息列表</button>
+                        <button class="btn-friends" onclick="toggleOffcanvas()">好友列表</button>
+                        <button class="btn-messages" onclick="toggleMessageSidebar()">消息列表</button>
                     </div>
                     <p class="write-post">
                         <a href="{% url 'post_create' %}" style="text-decoration: none; color: #454e57;">
@@ -334,7 +356,7 @@ function handleNoticeClick(event, noticeId, noticeType) {
     <!-- 未读消息块 -->
     <div class="unread-messages">
         <p class="msg-type" onclick="toggleContent('unread-content')">未读消息</p>
-        <div id="unread-content" class="content" style="display: none;">
+        <div id="unread-content" class="content" style="display: block;">
             <div class="message-sec"> 
                 <div class="message-tabs">
                     <button onclick="showTab('private-messages', 'message-sec')">私信{% if unread_msg_count != 0 %}({{unread_msg_count}}){% endif %}</button>
@@ -471,11 +493,11 @@ function handleNoticeClick(event, noticeId, noticeType) {
         <div class="post-sec">
           <div class="tabs-container">
             <div class="tabs-header">
-                <h2 class="post-header" onclick="showTab('posts','post-sec')" style="cursor: pointer;">我的发帖</h2>
+                <h2 class="post-header" onclick="showTab('posts','post-sec')" style="cursor: pointer; display:block;">我的发帖</h2>
                 <h2 class="post-header" onclick="showTab('likes','post-sec')" style="cursor: pointer;">我的收藏</h2>
             </div>
         
-            <div id="posts" class="tab-content">
+            <div id="posts" class="tab-content" style="display: block;">
                 {% block user_post %}
                 {% if user_posts %}
                     {% for post in user_posts %}
