@@ -742,7 +742,7 @@ class SearchView(ListView):
             return LoginUser.objects.filter(Q(username__icontains=q) | Q(email__icontains=q))
         else:
             # 在帖子的标题和内容中搜索
-            return Post.objects.only('title', 'content').filter(Q(title__icontains=q) | Q(content__icontains=q))
+            return Post.objects.only('title', 'content').filter(Q(title__icontains=q) | Q(content__icontains=q) | Q(author__username__icontains=q))
 
 
 def validate(request):
@@ -833,8 +833,11 @@ class UserPageView(BaseMixin, ListView):
     paginate_by = PAGE_NUM  # 如果有很多帖子，可以分页
 
     def get_queryset(self):
-        user_posts = Post.objects.filter(author=self.request.user)
-        return user_posts
+        if self.request.user.is_authenticated:
+            user_posts = Post.objects.filter(author=self.request.user)
+            return user_posts
+        else:
+            return Post.objects.none()
 
     def get_context_data(self, **kwargs):
         # 获取基本上下文数据

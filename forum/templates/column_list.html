@@ -1,104 +1,96 @@
 {% extends "./base.html" %}
 {% block css %}
 <link rel="stylesheet" type="text/css" href="/static/css/columns.css">
-{%endblock%}
+{% endblock %}
 {% block content %}
-<!-- {% for column in column_list %}
-	板块：<a href="{{ column.get_absolute_url }}">{{ column.name }}</a> ; 管理员:{{ column.manager }}; 帖子:{{column.post_number}}<br>
-	帖子列表：
-	{% for post in column.post_set.all %}
-		<a href="{{ post.get_absolute_url }}">{{ post.title }}</a>|<a href="{% url 'post_delete' post.pk %}">删除</a>
-	{% endfor %}
-	<br>
-{% endfor %} -->
 <div class="wrap">
+    <div class="box" float="left" width="1000px">
+        <div class="list" id="threadlist" style="position: relative;">
+            <script src="/static/js/forum_moderate.js" type="text/javascript"></script>
+            <form method="post" autocomplete="off" name="moderate" id="moderate" action="">
+                {% csrf_token %}
+                <input type="hidden" name="formhash" value="31213a3e">
+                <input type="hidden" name="listextra" value="">
+                {% for column in column_list %}
+                <table width="100%">
+                    <tbody>
+                        <tr id="column_{{ column.pk }}">
+                            <td width="auto" valign="middle" class="mainbox-col">
+                                <div class="title-link-col" style="display: flex; justify-content: space-between; align-items: center;">
+									<a class="title-link-col" href="{{ column.get_absolute_url }}" rel="bookmark" title="">{{ column.name }}</a>
+									<div class="post-number-col" style="text-align: right;">帖子: {{ column.post_number }}</div>
+								</div>								
+                                <div class="status-col">
+                                    <div class="manager-col">管理员: {{ column.manager }}</div>
+                                    <a href="javascript:void(0);" class="toggle-link" id="toggle-link-{{ column.pk }}" onclick="togglePosts('post-list-{{ column.pk }}', 'toggle-link-{{ column.pk }}')">展开</a>
+                                </div>
+                                <!-- 帖子列表，默认隐藏 -->
+                                <div id="post-list-{{ column.pk }}" class="post-list" style="display: none;">
+                                    {% for post in column.post_set.all %}
+                                    <table width="100%">
+                                        <tbody>
+                                            <tr id="post_{{ post.pk }}">
+                                                <td width="10%" class="avatar" valign="middle">
+                                                    <a href="{{ post.get_absolute_url }}" title="">
+                                                        <img src="{{ post.author.avatar.url }}">
+                                                    </a>
+                                                </td>
+                                                <td width="auto" valign="middle" class="mainbox">
+                                                    <div class="title">
+                                                        <a class="title" href="{{ post.get_absolute_url }}" rel="bookmark" title="">{{ post.title }}</a>
+                                                    </div>
+                                                    <div class="status">
+                                                        <div class="cate">
+                                                            <a href="{{ post.column.get_absolute_url }}" target="_blank">{{ post.column }}</a>
+                                                        </div>
+                                                        <span>•</span>
+                                                        <div class="date">
+                                                            <span title="">发表于: {{ post.created_at|date:"Y-m-d H:i:s" }};</span>
+                                                        </div>
+                                                        <span>•</span>
+                                                        <div class="author">{{ post.author }}</div>
+                                                        <span>•</span>
+                                                        <div class="lastreply">
+                                                            <a href="" target="_blank" title="1 分钟前">{{ post.last_response }} 最后回复</a>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td width="11%" align="right" valign="middle" class="reply">
+                                                    {{ post.responce_times }}/{{ post.view_times }}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    {% endfor %}
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                {% endfor %}
+        </div>
+        <div class="pages clearfix">
+            <div class="backhome" id="visitedforumstmp" onMouseOver="$(&#39;visitedforums&#39;).id = &#39;visitedforumstmp&#39;;this.id = &#39;visitedforums&#39;;showMenu({&#39;ctrlid&#39;:this.id,&#39;pos&#39;:&#39;21&#39;})">
+                <a href="/">返&nbsp;回</a>
+            </div>
+            <ul class="num"> <?php pagenavi(); ?></ul>
+        </div>
+    </div>
+    </form>
+</div>
+</div>
 
-	<!-- Diy area start -->
-
-
-	<!-- End -->
-
-	<!-- Banner start -->
-	<!-- end -->
-
-	<!-- text start -->
-	<div class="box" float = "left" width="1000px">
-
-
-		  <!-- End -->
-
-		  <!-- text theme list start -->
-		  <div class="list" id="threadlist" style="position: relative;">
-				<script src="/static/js/forum_moderate.js" type="text/javascript"></script>
-				<form method="post" autocomplete="off" name="moderate" id="moderate" action="">
-					  {%csrf_token %}
-					  <input type="hidden" name="formhash" value="31213a3e">
-					  <input type="hidden" name="listextra" value="">
-					  {% for column in column_list %}
-					  <table width="100%">
-						<tbody>
-							<tr id="column">
-								<td width="auto" valign="middle" class="mainbox-col">
-									<div class="title-link-col">
-										<a class="title-link-col" href="{{ column.get_absolute_url }}" rel="bookmark" title="">{{ column.name }}</a>
-									</div>
-									<div class="status-col">
-										<div class="manager-col">管理员: {{ column.manager }}</div>
-										<div class="post-number-col">帖子: {{ column.post_number }}</div>
-									</div>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-					  {% for post in column.post_set.all %}
-					  <table width="100%">
-							<tbody>
-								  <tr id="post">
-										<td width="10%" class="avatar" valign="middle">
-											  <a href="{{ post.get_absolute_url }}" title="">
-													<img src="{{ post.author.avatar.url }}">
-											  </a>
-										</td>
-										<td width="auto" valign="middle" class="mainbox">
-											  <div class="title">
-													<a class="title" href="{{ post.get_absolute_url }}" rel="bookmark"
-														  title="">{{ post.title }}</a>
-											  </div>
-											  <div class="status">
-													<div class="cate"><a href="{{ post.column.get_absolute_url }}"
-																target="_blank">{{ post.column }}</a></div>
-													<span>•</span>
-													<div class="date"><span title="">发表于:{{ post.created_at|date:"Y-m-d H:i:s" }};</span></div>
-													<span>•</span>
-													<div class="author">{{ post.author }}</div>
-													<span>•</span>
-
-													<div class="lastreply">
-														  <a href="" target="_blank" title="1 分钟前"> {{post.last_response }} 最后回复</a>
-													</div>
-
-											  </div>
-										</td>
-										<td width="11%" align="right" valign="middle" class="reply">
-											  {{ post.responce_times }}/{{ post.view_times}}
-										</td>
-								  </tr>
-							</tbody>
-					  </table>
-					  {% endfor %}
-					  {% endfor %}
-				</div>
-				<!-- End -->
-				
-				<!-- Page start -->
-				<div class="pages clearfix">
-				<div class="backhome" id="visitedforumstmp" onMouseOver="$(&#39;visitedforums&#39;).id = &#39;visitedforumstmp&#39;;this.id = &#39;visitedforums&#39;;showMenu({&#39;ctrlid&#39;:this.id,&#39;pos&#39;:&#39;21&#39;})"><a href="/">返&nbsp;回</a></div>
-				
-				<ul class="num"> <?php pagenavi(); ?></ul>    
-				</div>
-				<!-- End -->
-				</div>
-				</form>
-		  </div>      
-	</div>
+<script>
+    function togglePosts(postListId, linkId) {
+        var postList = document.getElementById(postListId);
+        var toggleLink = document.getElementById(linkId);
+        if (postList.style.display === "none") {
+            postList.style.display = "block";
+            toggleLink.textContent = "收起";
+        } else {
+            postList.style.display = "none";
+            toggleLink.textContent = "展开";
+        }
+    }
+</script>
 {% endblock %}

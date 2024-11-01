@@ -49,11 +49,11 @@
 
                 <ul class="user floatr">
                 {% if not user.is_authenticated %}
-                <li id="mn_portal"><a href="{% url 'user_login' %}" hidefocus="true" title="登陆">登陆</a></li>
+                <li id="mn_portal"><a href="{% url 'user_login' %}" hidefocus="true" title="登陆">登录</a></li>
                 <li class="a" id="mn_forum"><a href="{% url 'user_register' %}" hidefocus="true" title="注册">注册</a></li>
                 {%else%}
                 <li id="mn_portal"><a href="{% url 'show_notice' %}" hidefocus="true" title="消息">{{user.username}}({%if message_number %}{{message_number}}{%else%}0{%endif%})</a></li>
-                <li id="mn_portal"><a href="{% url 'user_logout'%}" hidefocus="true" title="注销">注销</a></li>
+                <li id="mn_portal"><a href="{% url 'user_logout'%}" hidefocus="true" title="注销">退出登录</a></li>
                 {% endif %}
                 
                 </ul>
@@ -75,32 +75,41 @@
 
                 </div> <!-- LOGO End -->
 
-                <!-- 搜索 Start -->
-                <div class="search" id="scarch_bar">
-                    <form id="scarch_bar_form" method="get" autocomplete="off" action="{% url 'search' %}">
-                        {% csrf_token %}
-                        <div class="input">
-                            <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <input id="scarch_bar_txt" name="srchtxt" type="text" dir="ltr" size="35"
-                                                spellcheck="false" value="" autocomplete="off" class="xg1"
-                                                placeholder="请输入搜索内容">
-                                        </td>
-                                        <td width="40" align="right">
-                                            <select id="search_type" name="search_type" class="xg1 xs2" style="border: none;">
-                                                <option value="post">帖子</option>
-                                                <option value="user">用户</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <button type="submit" name="searchsubmit" id="searchsubmit" class="button"><strong class="xi2 xs2">搜索</strong></button>
-                    </form>
-                </div>
+               <!-- 搜索 Start -->
+<div class="search" id="scarch_bar">
+    <form id="scarch_bar_form" method="get" autocomplete="off" action="{% url 'search' %}">
+        {% csrf_token %}
+        <div class="input">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tbody>
+                    <tr>
+                        <td>
+                            <input id="scarch_bar_txt" name="srchtxt" type="text" dir="ltr" size="35"
+                                spellcheck="false" value="" autocomplete="off" class="xg1"
+                                placeholder="请输入搜索内容（不超过30字）" oninput="truncateInput(this)">
+                        </td>
+                        <td width="40" align="right">
+                            <select id="search_type" name="search_type" class="xg1 xs2" style="border: none; background:none;">
+                                <option value="post">帖子</option>
+                                <option value="user">用户</option>
+                            </select>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <button type="submit" name="searchsubmit" id="searchsubmit" class="button"><strong class="xi2 xs2">搜索</strong></button>
+    </form>
+</div>
+
+<script>
+    function truncateInput(input) {
+        if (input.value.length > 30) {
+            input.value = input.value.substring(0, 30);
+        }
+    }
+</script>
+
                 
 
 
