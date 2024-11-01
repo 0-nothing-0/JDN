@@ -5,7 +5,7 @@ import logging
 import random #changed
 
 from io import BytesIO
-
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.shortcuts import redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse #changed
@@ -410,7 +410,8 @@ def add_to_favorites(request, post_pk):
     if request.user.is_authenticated:
         post = get_object_or_404(Post, pk=post_pk)
         Lrelation.objects.get_or_create(user=request.user, post=post)
-    return redirect('index')  # 重定向回首页或其他页面
+        return_url = request.META.get('HTTP_REFERER', 'index')  # 如果没有来源则默认重定向到 'index'
+    return redirect(return_url)  # 重定向回首页或其他页面
 
 def remove_from_favorites(request, post_pk):
     if request.user.is_authenticated:
@@ -418,7 +419,8 @@ def remove_from_favorites(request, post_pk):
         relation = Lrelation.objects.filter(user=request.user, post=post)
         if relation.exists():
             relation.delete()
-    return redirect('index')
+        return_url = request.META.get('HTTP_REFERER', 'index')  # 如果没有来源则默认重定向到 'index'
+    return redirect(return_url)
 
 def postdetail(request, post_pk):
     """帖子详细页面"""
@@ -430,6 +432,8 @@ def postdetail(request, post_pk):
     else:
         k = 0
     # 统计帖子的访问访问次数
+    is_favorited = Lrelation.objects.filter(user=request.user, post=post).exists() if request.user.is_authenticated else False
+    
     if 'HTTP_X_FORWARDED_FOR' in request.META:
         ip = request.META['HTTP_X_FORWARDED_FOR']
     else:
@@ -445,7 +449,8 @@ def postdetail(request, post_pk):
     return render(request, 'post_detail.html', {
         'post': post,
         'comment_list': comment_list,
-        'message_number': k
+        'message_number': k,
+        'is_favorited': is_favorited
     })
 
 
@@ -549,8 +554,10 @@ class PostCreate(CreateView):
         p.save()
         user.levels += 5  # 发帖一次积分加 5
         user.save()
-        return HttpResponse("发贴成功！<a href='/'>返回</a>")
+        return HttpResponseRedirect('/user/post_create_return/')
 
+def create_return(request):
+    return render(request, 'create_return.html')
 
 class PostUpdate(UpdateView):
     """编辑贴"""
@@ -595,17 +602,34 @@ def makecomment(request):
     return HttpResponse("评论成功")
 
 
+# class MessageCreate(CreateView):
+#     """发送消息"""
+#     model = Message
+#     template_name = 'form.html'
+#     form_class = MessageForm
+#     # fields = ('content',)
+#     # SAE django1.5中fields失效，不知原因,故使用form_class
+#     success_url = reverse_lazy('show_notice')
+
+#     def form_valid(self, form):
+#         # 此处有待加强安全验证
+#         sender = LoginUser.objects.get(username=self.request.user)
+#         receiver_id = int(self.kwargs.get('pk'))
+#         receiver = LoginUser.objects.get(id=receiver_id)
+#         formdata = form.cleaned_data
+#         formdata['sender'] = sender
+#         formdata['receiver'] = receiver
+#         m = Message(**formdata)
+#         m.save()
+#         return HttpResponse("消息发送成功！")
 class MessageCreate(CreateView):
     """发送消息"""
     model = Message
     template_name = 'form.html'
     form_class = MessageForm
-    # fields = ('content',)
-    # SAE django1.5中fields失效，不知原因,故使用form_class
-    success_url = reverse_lazy('show_notice')
+    success_url = reverse_lazy('show_notice')  # This will be used as a fallback URL
 
     def form_valid(self, form):
-        # 此处有待加强安全验证
         sender = LoginUser.objects.get(username=self.request.user)
         receiver_id = int(self.kwargs.get('pk'))
         receiver = LoginUser.objects.get(id=receiver_id)
@@ -614,7 +638,9 @@ class MessageCreate(CreateView):
         formdata['receiver'] = receiver
         m = Message(**formdata)
         m.save()
-        return HttpResponse("消息发送成功！")
+
+        # Return a JSON response to indicate success
+        return JsonResponse({'success': True, 'message': '消息发送成功！'})
 
 
 class MessageDetail(DetailView):
