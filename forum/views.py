@@ -777,10 +777,13 @@ class UserPageView(BaseMixin, ListView):
             context['like_url'] = user_obj.get_like_url()
             like_relations = user_obj.user_relations.all()
             context['like_posts'] = [like_relation.post for like_relation in like_relations]    
+            # 获取用户的未读通知列表
+            notice_list = Notice.objects.filter(receiver=user_obj, status=False)
+            context['notice_list'] = notice_list
         else:
             context['user'] = None  # 如果未登录，则用户信息为 None
             context['friends'] = []  # 确保 friends 是一个空列表
-        
+            context['notice_list'] = []  # 确保 notice_list 是一个空列表
         return context
 
 

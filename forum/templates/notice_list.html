@@ -73,6 +73,14 @@ function showTab(tabId) {
     // 显示选中的 tab-content
     document.getElementById(tabId).style.display = 'block';
 }
+function openMessageSidebar() {
+    document.getElementById("messageSidebar").style.width = "300px";
+}
+
+function closeMessageSidebar() {
+    document.getElementById("messageSidebar").style.width = "0";
+}
+
 </script>
 
 {%endblock%}
@@ -151,7 +159,7 @@ function showTab(tabId) {
                     <p class="user-levels">积分: {{ user.levels }}</p>
                     <div class="button-group-up">
                         <button class="btn-friends" onclick="openOffcanvas()">好友列表</button>
-                        <button class="btn-messages" onclick="">消息列表</button>
+                        <button class="btn-messages" onclick="openMessageSidebar()">消息列表</button>
                     </div>
                     <p class="write-post">
                         <a href="{% url 'post_create' %}" style="text-decoration: none; color: #454e57;">
@@ -178,7 +186,33 @@ function showTab(tabId) {
         </ul>
     </div>
 </div>
-
+<!-- 右侧边栏 -->
+<div id="messageSidebar" class="sidebar">
+    <div class="sidebar-header">
+        <span class="close-btn" onclick="closeMessageSidebar()">&times;</span>
+        <h2>消息列表</h2>
+    </div>
+    <div class="sidebar-content">
+        {% for notice in notice_list %}
+            {% if notice.type == 2 %}
+                <div class="notice-item">
+                    <p class="notice-text">{{ notice }}</p>
+                    <div class="notice-actions">
+                        <a class="notice-link agree" href="{% url 'friend_agree' notice.pk 1 %}">同意</a> |
+                        <a class="notice-link decline" href="{% url 'friend_agree' notice.pk 2 %}">拒绝</a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="notice-item">
+                    <a class="notice-link" href="{% url 'notice_detail' notice.pk %}">{{ notice }}</a>
+                </div>
+            {% endif %}
+            <hr>
+        {% empty %}
+            <p class="no-notices">您没有收到任何通知。</p>
+        {% endfor %}
+    </div>
+</div>
         </div>
         <div class="tabs-container">
             <div class="tabs-header">
