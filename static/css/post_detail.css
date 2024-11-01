@@ -5,6 +5,7 @@
     background-color: white; /* 设置背景颜色为白色 */
     padding: 20px; /* 添加内边距 */
     box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* 添加轻微的阴影 */
+    min-height: 100%;
 }
 
 /* 帖子样式 */
@@ -29,7 +30,7 @@
 /* 内容样式 */
 .content, .content_comment {
     float: left;
-    width: calc(100% - 70px); /* 计算剩余宽度 */
+    width: calc(70% - 70px); /* 计算剩余宽度 */
     padding: 1em; /* 增加内边距以提升阅读体验 */
     border-radius: 8px; /* 添加圆角 */
     background-color: white; /* 背景设为白色提升清晰度 */
@@ -78,4 +79,10 @@
     color: #333; /* 深灰色文本增强对比度 */
     font-size: 16px; /* 增大字体大小 */
     line-height: 1.5; /* 增加行间距 */
+}
+
+.clearfix::after {
+    content: "";
+    display: table;
+    clear: both;
 }
