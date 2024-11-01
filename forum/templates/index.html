@@ -104,7 +104,7 @@
                                 <div class="author">{{ post.author }}</div>
                                 <span>•</span>
                                 <div class="lastreply">
-                                    <a href="" target="_blank" title="1 分钟前">{{ post.last_response }}最后回复</a>
+                                    {{ post.last_response }}最后回复
                                 </div>
                             </div>
                         </td>                    
@@ -118,7 +118,7 @@
                         </td>
                         {%endif%}
                         <td width="11%" align="right" valign="middle" class="reply">
-                            <a href="" target="_blank">{{ post.responce_times }}/{{ post.view_times }}</a>
+                            {{ post.responce_times }}/{{ post.view_times }}
                         </td>
                     </tr>
                 </tbody>

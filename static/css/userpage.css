@@ -175,10 +175,21 @@
 .offcanvas-content {
     padding: 20px;
 }
+.offcanvas-header {
+    display: flex;
+    justify-content: space-between; /* Space between the title and the close button */
+    align-items: center; /* Align items vertically in the center */
+    margin-bottom: 20px; /* Add some space below the header */
+}
+
+.offcanvas-title {
+    margin: 0; /* Remove default margin from the title */
+    font-size: 24px; /* Adjust font size as needed */
+}
 
 .close-btn {
-    font-size: 24px;
-    cursor: pointer;
+    font-size: 24px; /* Adjust the size of the close button */
+    cursor: pointer; /* Change cursor to pointer when hovering */
 }
 
 .friends-list {
@@ -193,10 +204,10 @@
 }
 
 .friend-avatar {
-    width: 50px;
-    height: 50px;
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
-    margin-right: 10px;
+    margin-right: 20px;
 }
 
 .friend-details {
@@ -330,22 +341,23 @@
 /* 右侧边栏样式 */
 .sidebar {
     height: 100%;
-    width: 0;
+    width: 350px;;
     position: fixed;
     top: 0;
     right: 0;
     background-color: #f1f1f1;
     overflow-x: hidden;
     transition: 0.5s;
-    padding-top: 60px;
     z-index: 1000;
+    display: none;
 }
 
 .sidebar-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
+    padding: 5px 10px;
+    margin: 0;
 }
 
 .close-btn {
@@ -416,4 +428,19 @@ hr {
     border: none;
     border-top: 1px solid #ddd;
     margin: 10px 0;
+}
+.send-message-btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 12px;
+    background-color: #007BFF;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.send-message-btn:hover {
+    background-color: #0056b3;
 }

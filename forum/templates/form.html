@@ -1,27 +1,25 @@
 {% extends "./base.html" %}
-{%block user %} 
+{% block user %} 
 
 <ul class="user floatr">
 {% if not user.is_authenticated %}
 <li id="mn_portal"><a href="{% url 'user_login' %}" hidefocus="true" title="登陆">登陆</a></li>
 <li class="a" id="mn_forum"><a href="{% url 'user_register' %}" hidefocus="true" title="注册">注册</a></li>
-{%else%}
-<li id="mn_portal"><a href="{% url 'show_notice' %}" hidefocus="true" title="消息">{{user.username}}({%if message_number %}{{message_number}}{%else%}0{%endif%})</a></li>
-<li id="mn_portal"><a href="{% url 'user_logout'%}" hidefocus="true" title="注销">注销</a></li>
+{% else %}
+<li id="mn_portal"><a href="{% url 'show_notice' %}" hidefocus="true" title="消息">{{ user.username }}({% if message_number %}{{ message_number }}{% else %}0{% endif %})</a></li>
+<li id="mn_portal"><a href="{% url 'user_logout' %}" hidefocus="true" title="注销">注销</a></li>
 {% endif %}
-
 </ul>
 
 {% endblock %}
 
-{%block nav %} 
-     <ul>
- 	<li class="current"><a href="/">首页</a></li>
-        {% for nav in nav_list %}
-		<li><a href="/">{{ nav.name }}</a></li>
-	{% endfor %}
-                   
-     </ul>
+{% block nav %} 
+<ul>
+    <li class="current"><a href="/">首页</a></li>
+    {% for nav in nav_list %}
+        <li><a href="/">{{ nav.name }}</a></li>
+    {% endfor %}
+</ul>
 {% endblock %}
 
 {% block CreatePost %}
@@ -31,14 +29,104 @@
 
 <script type="text/javascript" src="/static/ckeditor/ckeditor.js"></script>
 
-<div style="width: 67em;margin: auto;padding: 1em;">
-	<form action="" method="post">
-		{% csrf_token %}
-		{{ form.as_p }}
-		<script type="text/javascript">CKEDITOR.replace('content');</script>
-		<input type="submit" value="更新/添加" style="display: block;margin: auto; background-color: white;color: black; border: 2xp;border-radius: 2em;width: 7em;height: 3em;">
-	</form>
+<div style="width: 67em; margin: auto; padding: 1em;">
+    <form id="post-form" action="" method="post" onsubmit="return handleFormSubmit(event);">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <script type="text/javascript">CKEDITOR.replace('content');</script>
+        <input type="submit" value="更新/添加" style="display: block; margin: auto; background-color: white; color: black; border: 2px; border-radius: 2em; width: 7em; height: 3em;">
+    </form>
 </div>
 
+<!-- 弹窗 -->
+<div id="success-popup" class="popup" style="display: none;">
+    <span class="close-btn" onclick="closePopup()">&times;</span>
+    <div class="popup-content">
+        <p style="font-size: large;">操作成功！</p>
+    </div>
+</div>
+
+<style>
+    /* 弹窗样式 */
+    .popup {
+        position: absolute; /* 使用 absolute 使弹窗相对于最近的定位祖先进行定位 */
+        top: 50%; /* 垂直居中 */
+        left: 50%; /* 水平居中 */
+        transform: translate(-50%, -50%); /* 平移使弹窗居中 */
+        background-color: #f9f9f9;
+        padding: 30px; /* 增大内边距 */
+        border: 1px solid #ddd;
+        border-radius: 8px; /* 圆角稍大一些 */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* 更深的阴影效果 */
+        width: 400px; /* 增大弹窗宽度 */
+        max-width: 90%; /* 响应式：保持窗口不会过宽 */
+        z-index: 1000;
+    }
+
+    /* 关闭按钮样式 */
+    .close-btn {
+        position: absolute;
+        top: 10px; /* 将按钮定位到顶部 */
+        right: 10px; /* 将按钮定位到右侧 */
+        font-size: 20px;
+        font-weight: bold;
+        color: #333;
+        cursor: pointer;
+    }
+
+    .close-btn:hover {
+        color: #ff0000; /* 鼠标悬停时，关闭按钮变为红色 */
+    }
+
+    .popup-content {
+        text-align: center; /* 保持文字居中 */
+    }
+
+    .popup-content p {
+        margin-top: 20px; /* 增加文字与关闭按钮的间距 */
+    }
+</style>
+
+
+
+
+<script>
+    function handleFormSubmit(event) {
+        event.preventDefault(); // 阻止默认的表单提交行为
+
+        // 发送表单数据（使用 fetch API 或 AJAX）
+        const form = document.getElementById('post-form');
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest' // 确保这是一个 AJAX 请求
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                // 显示成功弹窗
+                document.getElementById('success-popup').style.display = 'block';
+            } else {
+                alert('提交失败，请重试。');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('提交失败，请重试。');
+        });
+    }
+
+    function closePopup() {
+
+    document.getElementById('success-popup').style.display = 'none';
+    // 重定向到上一个页面
+    window.history.back();
+    }
+</script>
 
 {% endblock %}
+{%block pagefoot%}
+{%endblock%}

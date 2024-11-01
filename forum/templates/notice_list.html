@@ -74,12 +74,19 @@ function showTab(tabId) {
     document.getElementById(tabId).style.display = 'block';
 }
 function openMessageSidebar() {
-    document.getElementById("messageSidebar").style.width = "300px";
+    const sidebar = document.getElementById("messageSidebar");
+    sidebar.style.display = "block"; /* Make the sidebar visible */
+    sidebar.style.width = "300px"; /* Adjust the width as needed */
 }
 
 function closeMessageSidebar() {
-    document.getElementById("messageSidebar").style.width = "0";
+    const sidebar = document.getElementById("messageSidebar");
+    sidebar.style.width = "0"; /* Collapse the sidebar */
+    setTimeout(() => {
+        sidebar.style.display = "none"; /* Hide the sidebar after collapsing */
+    }, 500); /* Match the duration of the transition */
 }
+
 
 </script>
 
@@ -170,8 +177,10 @@ function closeMessageSidebar() {
                 <!-- Offcanvas 结构 -->
 <div id="offcanvas-friends" class="offcanvas">
     <div class="offcanvas-content">
-        <span class="close-btn" onclick="closeOffcanvas()">&times;</span>
-        <h2>好友列表</h2>
+        <div class="offcanvas-header">
+            <h1 class="offcanvas-title">好友列表</h1>
+            <span class="close-btn" onclick="closeOffcanvas()">&times;</span>
+        </div>
         <ul class="friends-list">
             {% for friend in friends %}
                 <li class="friend-item">
@@ -180,6 +189,7 @@ function closeMessageSidebar() {
                         <p class="friend-username">{{ friend.username }}</p>
                         <p class="friend-email">{{ friend.email }}</p>
                         <p class="friend-levels">积分: {{ friend.levels }}</p>
+                        <p class="sd-msg"><a href="{% url 'send_message' friend.id %}">发送消息</a></p> 
                     </div>
                 </li>
             {% endfor %}
@@ -253,7 +263,7 @@ function closeMessageSidebar() {
                                     </div>
                                 </td>
                                 <td class="reply" align="right" valign="middle">
-                                    <a href="" target="_blank" class="reply-count">{{ post.responce_times }}/{{ post.view_times }}</a>
+                                    <p class="reply-count">{{ post.responce_times }}/{{ post.view_times }}</p>
                                 </td>
                             </tr>
                         </tbody>
@@ -298,7 +308,7 @@ function closeMessageSidebar() {
                                     </div>
                                 </td>
                                 <td class="reply" align="right" valign="middle">
-                                    <a href="" target="_blank" class="reply-count">{{ post.responce_times }}/{{ post.view_times }}</a>
+                                    <p class="reply-count">{{ post.responce_times }}/{{ post.view_times }}</p>
                                 </td>
                             </tr>
                         </tbody>
