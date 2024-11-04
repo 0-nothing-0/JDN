@@ -16,7 +16,7 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'fetch-papers-every-day': {
         'task': 'paper.tasks.fetch_papers',
-        'schedule': crontab(minute='*'),
+        'schedule': crontab(minute='*'), # 每分钟执行一次
     },
     'fetch-eccv-papers-every-day': {
         'task': 'eccv.tasks.fetch_papers',
