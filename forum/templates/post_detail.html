@@ -8,7 +8,7 @@
 {% block athor %}
 <!-- 遮窗 Start -->
 <div id="popDiv" class="mydiv" style="display:none;">
-    <textarea id="comment" name="comment" class="form-control" rows="5" cols="35" placeholder="请输入评论 限200字!"></textarea>
+    <textarea id="comment" name="comment" class="form-control" rows="5" cols="35" style="width: 1200px;" placeholder="请输入评论 限200字!"></textarea>
     <br/>
     <a href="javascript:closeDivFun()">评论</a>
 </div>
@@ -40,139 +40,173 @@
 <div id="all_post" class="clearfix">
     <!-- 帖子详情部分 -->
     <div class="post clearfix"> 
-        <div class="avatar_comment clearfix" style="margin-bottom: 5%; background-color: white;">
+        <!-- 个人信息部分，左侧显示 -->
+        <div style="text-align: center; margin-bottom: 20px; width: 200px; float: left; margin-right: 20px;">
             {% if post.author.avatar %}
-                <img class="head" src="{{ post.author.avatar.url }}" style="display: block; margin-left: auto; margin-right: auto; width:200px; height:200px;"><br>
+                <img src="{{ post.author.avatar.url }}" style="width:100px; height:100px; border-radius:50%;"><br>
             {% else %}
-                <img class="head" src="http://vmaig.qiniudn.com/image/tx/tx-default.jpg" style="display: block; margin-left: auto; margin-right: auto;width:200px; height:200px;"><br>
+                <img src="http://vmaig.qiniudn.com/image/tx/tx-default.jpg" style="width:100px; height:100px; border-radius:50%;"><br>
             {% endif %}
-                <div style="font-size: 150%; color:black; text-align: center;">{{ post.author.username }}</div>
-                <div style="color:gray; text-align: center;">积分：{{ post.author.levels }}</div>
-            <div style="font-style: italic;text-align: center;">
-            {% if user.username %}
-                {% ifnotequal post.author.username user.username %}
-                    {% if not post.author|checkfriend:user %}
-                        <a href="{% url 'make_friend' user.username post.author.username %}">加好友</a>
-                    {% else %}
-                        <a href="{% url 'send_message' post.author.id %}">发消息</a>
-                    {% endif %}
-                {% endifnotequal %}
+            <div style="font-size: 120%; color:black;">{{ post.author.username }}</div>
+            <div style="color:gray;">积分：{{ post.author.levels }}</div>
+            {% if user.is_authenticated and post.author.username != user.username %}
+                {% if not post.author|checkfriend:user %}
+                    <a href="{% url 'make_friend' user.username post.author.username %}">加好友</a>
+                {% else %}
+                    <a href="{% url 'send_message' post.author.id %}">发消息</a>
+                {% endif %}
             {% endif %}
+        </div>
+
+        <!-- 帖子内容部分，右侧显示 -->
+        <div style="overflow: hidden;">
+            <div style="border: 1px solid #ccc; padding: 20px; border-radius: 8px; background-color: #f9f9f9;">
+                <h2 style="color: black; font-size: 2em; text-align: center;">{{ post.title }}</h2>
+                <div style="color: black; font-size: 1.2em;">
+                    {% autoescape off %}
+                    {{ post.content }}
+                    {% endautoescape %}
+                </div>
             </div>
         </div>
-        <div class="content clearfix" style="margin-left: 2%; width: 80%; border: 1px black solid; margin-bottom: 5%; min-height: 20em; padding-left: 1%; padding-right: 1%; border-radius: 1em;">
-            <span style="color: black; font-size: 2em;">{{ post.title }}</span>
-            <div style="color: black; font-size: 1.5em;">
-                {% autoescape off %}
-                {{ post.content }}
-                {% endautoescape %}
-            </div>
-        </div>
-        <div style="font-size: 125%; color:grey; text-align: center;width: 7em; float: right;">
+    </div>
+    <div style="font-size: 125%; color:grey; text-align: center;width: 7em; float: right;">
         {% if is_favorited %}
-        <td width="11%" align="right" valign="middle" class="reply">
-            <a class="title" href="{{ post.delete_like_url }}" rel="bookmark" title="">取消收藏帖子</a>
-        </td>
-        {%else%}
+            <td width="11%" align="right" valign="middle" class="reply">
+                <a class="title" href="{{ post.delete_like_url }}" rel="bookmark" title="">取消收藏帖子</a>
+            </td>
+        {% else %}
             {% if user.is_authenticated %}
-            <td width="11%" align="right" valign="middle" class="reply">
-                <a class="title" href="{{ post.get_like_url }}" rel="bookmark" title="">收藏帖子</a>
-            </td>
-            {%else%}
-            <td width="11%" align="right" valign="middle" class="reply">
-                <a class="title" href="{% url 'user_login' %}" rel="bookmark" title="">收藏帖子</a>
-            </td>
-            {%endif%}
-        {%endif%}
-        </div>
+                <td width="11%" align="right" valign="middle" class="reply">
+                    <a class="title" href="{{ post.get_like_url }}" rel="bookmark" title="">收藏帖子</a>
+                </td>
+            {% else %}
+                <td width="11%" align="right" valign="middle" class="reply">
+                    <a class="title" href="{% url 'user_login' %}" rel="bookmark" title="">收藏帖子</a>
+                </td>
+            {% endif %}
+        {% endif %}
     </div>
-    <!-- 评论输入框 -->
-    <div class="well clearfix" style="max-width: 700px; margin: 20px auto; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-radius: 10px; background-color: #f9f9f9;">
-        <div class="vmaig-comment-edit clearfix">
-            <form id="vmaig-comment-form" method="post" role="form" style="text-align: center;">
-                {% csrf_token %}
-                <textarea id="comment2" name="comment" class="form-control" rows="4" style="width: 100%; margin-bottom: 10px; padding: 10px; border-radius: 8px; border: 1px solid #ccc; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);" placeholder="在这里留下你的评论吧！"></textarea>
-                <button type="submit" class="btn btn-vmaig-comments" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">提交</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- 评论列表 -->
-    <ul class="clearfix">
-        {% for comment in comment_list %}
-        <li class="clearfix">
-            <div class="comment clearfix">
-                <div class="avatar_comment clearfix">
-                    {% if comment.author.avatar %}
-                        <img src="{{ comment.author.avatar.url }}" width="40"><br>
-                    {% else %}
-                        <img src="http://vmaig.qiniudn.com/image/tx/tx-default.jpg" width="40"><br>
-                    {% endif %}
-                    <div style="font-size: 100%; color:black;">{{ comment.author.username }}</div>
-                    <div style="font-size: 75%; color:gray;">积分：{{ comment.author.levels }}</div>
-                    <div style="font-style: italic;text-align: center;">
-                    {% if user.username %}
-                        {% ifnotequal comment.author.username user.username %}
-                            {% if not comment.author|checkfriend:user %}
-                                <a href="{% url 'make_friend' user.username comment.author.username %}">加好友</a>
-                            {% else %}
-                                <a href="{% url 'send_message' comment.author.id %}">发消息</a>
-                            {% endif %}
-                        {% endifnotequal %}
-                    {% endif %}
-                    </div>
-                </div>
-                <div class="content_comment">
-                    <p>{% if comment.comment_parent %}回复 {{ comment.comment_parent.author }} 发表于 {{ comment.comment_parent.created_at|date:"Y-m-d H:i:s" }} 的内容《{{ comment.comment_parent.content }}》; {% endif %}{{ comment.created_at|date:"Y-m-d H:i:s" }}</p>
-                    <p style="font-size:small; color: black;">
-                        {% autoescape on %}
-                        {{ comment.content }}
-                        {% endautoescape %}
-                    </p>
-                </div>
-                <div class="floor" style="clear: both;">
-                    <a href="javascript:showDivFun({{ comment.pk }})" style="color: black; font-style: italic;">评论</a>
-                </div>
-
-                <!-- 回复输入框 -->
-                <div id="replyDiv{{ comment.pk }}" class="clearfix" style="display: none;">
-                    <form method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="post_id" value="{{ post.pk }}">
-                        <input type="hidden" name="comment_id" value="{{ comment.pk }}">
-                        <textarea name="comment" rows="3" cols="40" placeholder="输入你的回复..."></textarea><br/>
-                        <button type="submit" class="btn btn-vmaig-comments pull-right" style="display: block; margin: auto; background-color: white; color: black; border: 2px solid #ccc; border-radius: 1em;">提交</button>
-                    </form>
-                </div>
-            </div>
-        </li>
-        {% endfor %}
-    </ul>
 </div>
 
-<script src="/static/js/jquery.min.js" language="javascript" type="text/javascript"></script>
-<script language="javascript" type="text/javascript">
-// 弹出评论框的方法
-function showDivFun(comment_id) {
-    document.getElementById('replyDiv' + comment_id).style.display = 'block';
+<!-- 评论输入框 -->
+<div class="well clearfix" style="max-width: 1350px; margin: 20px auto; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-radius: 10px; background-color: #f9f9f9;">
+    <div class="vmaig-comment-edit clearfix">
+        <form id="vmaig-comment-form" method="post" role="form" style="text-align: center;">
+            {% csrf_token %}
+            <textarea id="comment" name="comment" class="form-control" rows="4" style="width: 100%; margin-bottom: 10px; padding: 10px; border-radius: 8px; border: 1px solid #ccc; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);" placeholder="在这里留下你的评论吧！"></textarea>
+            <button type="submit" class="btn btn-vmaig-comments" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">提交</button>
+        </form>
+    </div>
+</div>
+
+<!-- 评论列表 -->
+<ul class="clearfix" id="comments-list">
+    {% for comment in comment_list %}
+    <li class="clearfix">
+        <div class="comment clearfix">
+            <div class="avatar_comment clearfix">
+                {% if comment.author.avatar %}
+                    <img src="{{ comment.author.avatar.url }}" width="40"><br>
+                {% else %}
+                    <img src="http://vmaig.qiniudn.com/image/tx/tx-default.jpg" width="40"><br>
+                {% endif %}
+                <div style="font-size: 100%; color:black;">{{ comment.author.username }}</div>
+                <div style="font-size: 75%; color:gray;">积分：{{ comment.author.levels }}</div>
+                <div style="font-style: italic;text-align: center;">
+                {% if user.username %}
+                    {% ifnotequal comment.author.username user.username %}
+                        {% if not comment.author|checkfriend:user %}
+                            <a href="{% url 'make_friend' user.username comment.author.username %}">加好友</a>
+                        {% else %}
+                            <a href="{% url 'send_message' comment.author.id %}">发消息</a>
+                        {% endif %}
+                    {% endifnotequal %}
+                {% endif %}
+                </div>
+            </div>
+            <div class="content_comment">
+                <p>{% if comment.comment_parent %}回复 {{ comment.comment_parent.author }} 发表于 {{ comment.comment_parent.created_at|date:"Y-m-d H:i:s" }} 的内容《{{ comment.comment_parent.content }}》; {% endif %}{{ comment.created_at|date:"Y-m-d H:i:s" }}</p>
+                <p style="font-size:small; color: black;">
+                    {% autoescape on %}
+                    {{ comment.content }}
+                    {% endautoescape %}
+                </p>
+            </div>
+            <div class="floor" style="clear: both;">
+                <a href="javascript:showDivFun({{ comment.pk }})" style="color: black; font-style: italic;">评论</a>
+            </div>
+
+            <!-- 回复输入框 -->
+            <div id="replyDiv{{ comment.pk }}" class="clearfix" style="display: none;">
+                <form method="post" id="vmaig-reply-form-{{ comment.pk }}">
+                    {% csrf_token %}
+                    <input type="hidden" name="post_id" value="{{ post.pk }}">
+                    <input type="hidden" name="comment_id" value="{{ comment.pk }}">
+                    <textarea name="reply_content" rows="3" cols="40" placeholder="输入你的回复..."></textarea><br/>
+                    <button type="submit" class="btn btn-vmaig-comments pull-right" style="display: block; margin: auto; background-color: white; color: black; border: 2px solid #ccc; border-radius: 1em;">提交</button>
+                </form>
+            </div>
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+</div>
+
+<script src="/static/js/jquery.min.js" language="javascript"></script>
+<script>
+function showDivFun(commentId) {
+    $("#replyDiv" + commentId).toggle(); // 切换显示回复框
 }
 
-// 提交评论和回复
-$('#vmaig-comment-form').submit(function(){
-	{% if not user.is_authenticated %}
+$('form#vmaig-comment-form').submit(function(event) {
+    event.preventDefault(); // 阻止默认提交
+    {% if not user.is_authenticated %}
         alert("请登录后评论！");
         return false;
     {% endif %}
+
+    const form = $(this);
+    const postId = "{{ post.pk }}";
+    const commentContent = form.find('textarea[name="comment"]').val();
+
     $.ajax({
-        type:"POST",
-        url:"{% url 'make_comment'%}",
-        data:{"comment":$("#comment2").val(),"post_id":{{post.pk}}},
-        success:function(data,textStatus){
-            location.reload();
+        type: "POST",
+        url: "{% url 'make_comment' %}",
+        data: {
+            "comment": commentContent,
+            "post_id": postId
+        },
+        success: function(data) {
+            location.reload(); // 刷新页面以显示新评论
         }
-        
     });
-    return false;
-}); 
+});
+
+$('form[id^="vmaig-reply-form-"]').submit(function(event) {
+    event.preventDefault(); // 阻止默认提交
+    {% if not user.is_authenticated %}
+        alert("请登录后评论！");
+        return false;
+    {% endif %}
+
+    const form = $(this);
+    const commentId = form.find('input[name="comment_id"]').val(); // 获取当前回复的 comment_id
+    const postId = form.find('input[name="post_id"]').val();
+    const replyContent = form.find('textarea[name="reply_content"]').val();
+
+    $.ajax({
+        type: "POST",
+        url: "{% url 'make_comment' %}",
+        data: {
+            "comment": replyContent,
+            "post_id": postId,
+            "comment_id": commentId
+        },
+        success: function(data) {
+            location.reload(); // 刷新页面以显示新评论
+        }
+    });
+});
 </script>
 {% endblock %}
