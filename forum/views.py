@@ -267,14 +267,15 @@ def forgotpassword(request):
                     # 更新用户密码
                     user.set_password(new_password)
                     user.save()
-                    response_html = """
+                    index_url = reverse('index')
+                    response_html = f"""
                     <html>
                         <head>
-                            <meta http-equiv="refresh" content="3;url={% url 'index' %}" />
+                            <meta http-equiv="refresh" content="3;url={index_url}" />
                         </head>
                         <body>
-                            <p>密码已成功重置！5秒后将自动跳转到主页。</p>
-                            <p>如果没有跳转，点 <a href="{% url 'index' %}">这里</a> 返回主页。</p>
+                            <p>密码已成功重置！3秒后将自动跳转到主页。</p>
+                            <p>如果没有跳转，点 <a href="/">这里</a> 返回主页。</p>
                         </body>
                     </html>
                     """
